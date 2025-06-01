@@ -1,0 +1,17 @@
+# files to ignore
+.env
+~$seeds.xlsx
+digihub-app
+
+# directories to ignore
+.idea
+.vscode
+backups
+logs
+storage
+tmp
+
+# executables to ignore
+main.exe
+crowners-app.exe
+crowners-app
