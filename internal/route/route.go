@@ -1,4 +1,4 @@
-package router
+package route
 
 import (
 	userHandler "inventori-beacukai-backend/internal/module/user/handler"

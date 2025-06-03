@@ -2,60 +2,40 @@ package main
 
 import (
 	"flag"
-	"fmt"
+	"inventori-beacukai-backend/cmd"
 	"inventori-beacukai-backend/internal/adapter"
 	"inventori-beacukai-backend/internal/infrastructure/config"
-	"inventori-beacukai-backend/internal/router"
 	"os"
-	"os/signal"
 	"strings"
-	"syscall"
 
-	"github.com/gofiber/fiber/v2"
 	"github.com/rs/zerolog/log"
 )
 
 func main() {
 	os.Args = initialize()
 
-	log.Info().Msg("Starting server...")
+	serverCmd := flag.NewFlagSet("server", flag.ExitOnError)
+	seedCmd := flag.NewFlagSet("seed", flag.ExitOnError)
 
-	cfg := config.Envs
-
-	app := fiber.New()
-
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello")
-	})
-	adapter.Adapters.Sync(
-		adapter.WithRestServer(app),
-		adapter.WithPostgres(),
-	)
-
-	router.SetupRoutes(app)
-
-	addr := fmt.Sprintf(":%s", cfg.App.Port)
-	log.Info().Msgf("Server running at http://localhost%s", addr)
-
-	// Jalankan server dalam goroutine
-	go func() {
-		if err := app.Listen(addr); err != nil {
-			log.Fatal().Err(err).Msg("failed to start server")
-		}
-	}()
-
-	// Tangkap sinyal shutdown (Ctrl+C, SIGTERM)
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-	<-quit
-	log.Info().Msg("Gracefully shutting down server...")
-
-	if err := adapter.Adapters.Unsync(); err != nil {
-		log.Error().Err(err).Msg("Error while shutting down adapters")
-	} else {
-		log.Info().Msg("Server shut down cleanly.")
+	if len(os.Args) < 2 {
+		log.Info().Msg("No command provided, defaulting to 'server'")
+		cmd.RunServer(serverCmd, os.Args[1:])
+		return
 	}
 
+	switch os.Args[1] {
+	case "seed":
+		cmd.RunSeed(seedCmd, os.Args[2:])
+	case "server":
+		cmd.RunServer(serverCmd, os.Args[2:])
+	default:
+		log.Info().Msg("Invalid command provided, defaulting to 'server' with provided flags")
+		if strings.HasPrefix(os.Args[1], "-") {
+			cmd.RunServer(serverCmd, os.Args[1:])
+		} else {
+			cmd.RunServer(serverCmd, os.Args[2:])
+		}
+	}
 }
 
 func initialize() (newArgs []string) {
@@ -63,9 +43,13 @@ func initialize() (newArgs []string) {
 	configFilename := flag.String("config_filename", ".env", "config file name")
 	flag.Parse()
 
-	logCfg := *configPath + "/" + *configFilename
+	configFullPath := *configPath
+	if !strings.HasSuffix(configFullPath, "/") {
+		configFullPath += "/"
+	}
+	configFullPath += *configFilename
 
-	log.Info().Msgf("Initializing configuration with config: %s", logCfg)
+	log.Info().Msgf("Initializing configuration with config: %s", configFullPath)
 
 	config.Configuration(
 		config.WithPath(*configPath),
@@ -78,7 +62,6 @@ func initialize() (newArgs []string) {
 		if strings.Contains(arg, "config_path") || strings.Contains(arg, "config_filename") {
 			continue
 		}
-
 		newArgs = append(newArgs, arg)
 	}
 
