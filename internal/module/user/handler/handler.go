@@ -25,4 +25,5 @@ func NewUserHandler() *UserHandler {
 
 func (h *UserHandler) Register(router fiber.Router) {
 	router.Post("/login", h.login)
+	router.Post("/register", h.registerUser)
 }

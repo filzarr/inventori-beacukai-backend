@@ -15,26 +15,28 @@ import (
 func (r *userRepo) Login(ctx context.Context, req *entity.LoginReq) (*entity.LoginResp, error) {
 	type user struct {
 		Id       string `db:"id"`
-		Name     string `db:"id"`
 		Email    string `db:"email"`
 		Password string `db:"password"`
+		Role     string `db:"role"`
 	}
-
 	var (
-		resp   = new(entity.LoginResp)
+		res    = new(entity.LoginResp)
 		result = new(user)
 	)
 
 	query := `
-		SELECT 
-			id,
-			name,
-			email,
-			password
+		SELECT
+			u.id,
+			u.email,
+			u.password,
+			r.name as role
 		FROM
-			users
-		WHERE 
-			deleted_at IS NULL
+			users u
+		JOIN
+			roles r ON r.id = u.role_id
+		WHERE
+			u.email = ?
+			AND u.deleted_at IS NULL
 	`
 
 	err := r.db.GetContext(ctx, result, r.db.Rebind(query), req.Email)
@@ -52,9 +54,11 @@ func (r *userRepo) Login(ctx context.Context, req *entity.LoginReq) (*entity.Log
 		return nil, errmsg.NewCustomErrors(400).SetMessage("Kredensial yang Anda masukkan salah")
 	}
 
-	tokenExp := time.Now().UTC().Add(time.Hour * 1048)
+	// set token
+	tokenExp := time.Now().UTC().Add(time.Hour * 24)
 	payload := jwthandler.CostumClaimsPayload{
 		UserId:          result.Id,
+		Role:            result.Role,
 		TokenExpiration: tokenExp,
 	}
 
@@ -64,8 +68,7 @@ func (r *userRepo) Login(ctx context.Context, req *entity.LoginReq) (*entity.Log
 		return nil, errmsg.NewCustomErrors(500).SetMessage("Gagal membuat token")
 	}
 
-	resp.AccessToken = token
+	res.AccessToken = token
 
-	return resp, nil
-
+	return res, nil
 }
