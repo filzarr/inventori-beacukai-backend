@@ -29,8 +29,7 @@ CREATE TABLE IF NOT EXISTS inventories (
   negara_asal       CHAR(50)        NOT NULL,
   document_type     document_type   NOT NULL,
   keterangan        VARCHAR(255),
-  document_status   document_status NOT NULL,
-  tanggal           TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  document_status   document_status NOT NULL, 
   created_at        TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at        TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted_at        TIMESTAMP WITH TIME ZONE

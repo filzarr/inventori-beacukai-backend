@@ -17,14 +17,15 @@ func (h *MasterHandler) getUsers(c *fiber.Ctx) error {
 	)
 
 	if err := c.QueryParser(req); err != nil {
-		log.Warn().Err(err).Msg("handler::getLecturers - failed to parse request")
+		log.Warn().Err(err).Msg("handler::getUsers - failed to parse request")
 		return c.Status(fiber.StatusBadRequest).JSON(response.Error(err))
 	}
+	log.Debug().Any("req", req).Msg("Parsed Query")
 
 	req.SetDefault()
 
 	if err := v.Validate(req); err != nil {
-		log.Warn().Err(err).Any("req", req).Msg("handler::getLecturers - invalid request")
+		log.Warn().Err(err).Any("req", req).Msg("handler::getUsers - invalid request")
 		code, errs := errmsg.Errors(err, req)
 		return c.Status(code).JSON(response.Error(errs))
 	}

@@ -38,8 +38,8 @@ func (r *masterRepo) GetUsers(ctx context.Context, req *entity.GetUsersReq) (*en
 
 	if req.Q != "" {
 		query += ` AND (
-			name ILIKE '%' || ? || '%' OR
-			phone ILIKE '%' || ? || '%'
+			u.name ILIKE '%' || ? || '%' OR
+			u.email ILIKE '%' || ? || '%' 
 		)
 		`
 		args = append(args, req.Q, req.Q)
@@ -47,9 +47,9 @@ func (r *masterRepo) GetUsers(ctx context.Context, req *entity.GetUsersReq) (*en
 
 	query += ` LIMIT ? OFFSET ?`
 	args = append(args, req.Paginate, (req.Page-1)*req.Paginate)
-
+	log.Debug().Any("args", args).Msg("Parsed Query")
 	if err := r.db.SelectContext(ctx, &data, r.db.Rebind(query), args...); err != nil {
-		log.Error().Err(err).Any("req", req).Msg("repo::GetLecturers - failed to query lecturers")
+		log.Error().Err(err).Any("req", req).Msg("repo::GetUsers - failed to query Users")
 		return nil, err
 	}
 

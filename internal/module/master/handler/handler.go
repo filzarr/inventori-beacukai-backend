@@ -23,5 +23,12 @@ func NewMasterHandler() *MasterHandler {
 }
 
 func (h *MasterHandler) Register(router fiber.Router) {
+	// User Router
 	router.Get("/users", h.getUsers)
+	// Inventory Router
+	router.Get("/inventory", h.getInventories)
+	router.Get("/inventory/:id", h.getInventory)
+	router.Post("/inventory", h.createInventory)
+	router.Put("/inventory/:id", h.updateInventory)
+	router.Delete("/inventory/:id", h.deleteInventory)
 }
