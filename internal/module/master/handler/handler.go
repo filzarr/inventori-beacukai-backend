@@ -23,4 +23,5 @@ func NewMasterHandler() *MasterHandler {
 }
 
 func (h *MasterHandler) Register(router fiber.Router) {
+	router.Get("/users", h.getUsers)
 }
