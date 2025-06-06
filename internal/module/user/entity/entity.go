@@ -13,6 +13,8 @@ func (r *LoginReq) Log() map[string]interface{} {
 
 type LoginResp struct {
 	AccessToken string `json:"access_token"`
+	Name        string `json:"name"`
+	Role        string `json:"role"`
 }
 
 type RegisterReq struct {

@@ -10,14 +10,14 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (h *MasterHandler) getInventories(c *fiber.Ctx) error {
+func (h *MasterHandler) getGudangs(c *fiber.Ctx) error {
 	var (
-		req = new(entity.GetInventoriesReq)
+		req = new(entity.GetGudangsReq)
 		v   = adapter.Adapters.Validator
 	)
 
 	if err := c.QueryParser(req); err != nil {
-		log.Warn().Err(err).Msg("handler::getInventories - failed to parse request")
+		log.Warn().Err(err).Msg("handler::getGudang - failed to parse request")
 		return c.Status(fiber.StatusBadRequest).JSON(response.Error(err))
 	}
 	log.Debug().Any("req", req).Msg("Parsed Query")
@@ -25,12 +25,12 @@ func (h *MasterHandler) getInventories(c *fiber.Ctx) error {
 	req.SetDefault()
 
 	if err := v.Validate(req); err != nil {
-		log.Warn().Err(err).Any("req", req).Msg("handler::getInventories - invalid request")
+		log.Warn().Err(err).Any("req", req).Msg("handler::getGudangs - invalid request")
 		code, errs := errmsg.Errors(err, req)
 		return c.Status(code).JSON(response.Error(errs))
 	}
 
-	resp, err := h.service.GetInventories(c.Context(), req)
+	resp, err := h.service.GetGudangs(c.Context(), req)
 	if err != nil {
 		code, errs := errmsg.Errors[error](err)
 		return c.Status(code).JSON(response.Error(errs))
@@ -39,21 +39,21 @@ func (h *MasterHandler) getInventories(c *fiber.Ctx) error {
 	return c.JSON(response.Success(resp, ""))
 }
 
-func (h *MasterHandler) getInventory(c *fiber.Ctx) error {
+func (h *MasterHandler) getGudang(c *fiber.Ctx) error {
 	var (
-		req = new(entity.GetInventoryReq)
+		req = new(entity.GetGudangReq)
 		v   = adapter.Adapters.Validator
 	)
 
 	req.Id = c.Params("id")
 
 	if err := v.Validate(req); err != nil {
-		log.Warn().Err(err).Any("req", req).Msg("handler::getLecturer - invalid request")
+		log.Warn().Err(err).Any("req", req).Msg("handler::getGudang - invalid request")
 		code, errs := errmsg.Errors(err, req)
 		return c.Status(code).JSON(response.Error(errs))
 	}
 
-	resp, err := h.service.GetInventory(c.Context(), req)
+	resp, err := h.service.GetGudang(c.Context(), req)
 	if err != nil {
 		code, errs := errmsg.Errors[error](err)
 		return c.Status(code).JSON(response.Error(errs))
@@ -62,24 +62,24 @@ func (h *MasterHandler) getInventory(c *fiber.Ctx) error {
 	return c.JSON(response.Success(resp, ""))
 }
 
-func (h *MasterHandler) createInventory(c *fiber.Ctx) error {
+func (h *MasterHandler) createGudang(c *fiber.Ctx) error {
 	var (
-		req = new(entity.CreateInventoryReq)
+		req = new(entity.CreateGudangReq)
 		v   = adapter.Adapters.Validator
 	)
 
 	if err := c.BodyParser(req); err != nil {
-		log.Warn().Err(err).Msg("handler::createInventory - failed to parse request")
+		log.Warn().Err(err).Msg("handler::createGudang - failed to parse request")
 		return c.Status(fiber.StatusBadRequest).JSON(response.Error(err))
 	}
 
 	if err := v.Validate(req); err != nil {
-		log.Warn().Err(err).Any("req", req).Msg("handler::createInventory - invalid request")
+		log.Warn().Err(err).Any("req", req).Msg("handler::createGudang - invalid request")
 		code, errs := errmsg.Errors(err, req)
 		return c.Status(code).JSON(response.Error(errs))
 	}
 
-	resp, err := h.service.CreateInventory(c.Context(), req)
+	resp, err := h.service.CreateGudang(c.Context(), req)
 	if err != nil {
 		code, errs := errmsg.Errors[error](err)
 		return c.Status(code).JSON(response.Error(errs))
@@ -88,16 +88,16 @@ func (h *MasterHandler) createInventory(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(response.Success(resp, ""))
 }
 
-func (h *MasterHandler) updateInventory(c *fiber.Ctx) error {
+func (h *MasterHandler) updateGudang(c *fiber.Ctx) error {
 	var (
-		req = new(entity.UpdateInventoryReq)
+		req = new(entity.UpdateGudangReq)
 		v   = adapter.Adapters.Validator
 	)
 
 	req.Id = c.Params("id")
 
 	if err := c.BodyParser(req); err != nil {
-		log.Warn().Err(err).Msg("handler::updateInventory - failed to parse request")
+		log.Warn().Err(err).Msg("handler::updateGudang - failed to parse request")
 		return c.Status(fiber.StatusBadRequest).JSON(response.Error(err))
 	}
 
@@ -107,7 +107,7 @@ func (h *MasterHandler) updateInventory(c *fiber.Ctx) error {
 		return c.Status(code).JSON(response.Error(errs))
 	}
 
-	err := h.service.UpdateInventory(c.Context(), req)
+	err := h.service.UpdateGudang(c.Context(), req)
 	if err != nil {
 		code, errs := errmsg.Errors[error](err)
 		return c.Status(code).JSON(response.Error(errs))
@@ -116,54 +116,25 @@ func (h *MasterHandler) updateInventory(c *fiber.Ctx) error {
 	return c.JSON(response.Success(nil, ""))
 }
 
-func (h *MasterHandler) deleteInventory(c *fiber.Ctx) error {
+func (h *MasterHandler) deleteGudang(c *fiber.Ctx) error {
 	var (
-		req = new(entity.DeleteInventoryReq)
+		req = new(entity.DeleteGudangReq)
 		v   = adapter.Adapters.Validator
 	)
 
 	req.Id = c.Params("id")
 
 	if err := v.Validate(req); err != nil {
-		log.Warn().Err(err).Any("req", req).Msg("handler::deleteInventory - invalid request")
+		log.Warn().Err(err).Any("req", req).Msg("handler::deleteGudang - invalid request")
 		code, errs := errmsg.Errors(err, req)
 		return c.Status(code).JSON(response.Error(errs))
 	}
 
-	err := h.service.DeleteInventory(c.Context(), req)
+	err := h.service.DeleteGudang(c.Context(), req)
 	if err != nil {
 		code, errs := errmsg.Errors[error](err)
 		return c.Status(code).JSON(response.Error(errs))
 	}
 
 	return c.JSON(response.Success(nil, ""))
-}
-
-func (h *MasterHandler) getInventoriesBahanBaku(c *fiber.Ctx) error {
-	var (
-		req = new(entity.GetInventoriesBahanBakuReq)
-		v   = adapter.Adapters.Validator
-	)
-
-	if err := c.QueryParser(req); err != nil {
-		log.Warn().Err(err).Msg("handler::getInventoriesBahanBaku - failed to parse request")
-		return c.Status(fiber.StatusBadRequest).JSON(response.Error(err))
-	}
-	log.Debug().Any("req", req).Msg("Parsed Query")
-
-	req.SetDefault()
-
-	if err := v.Validate(req); err != nil {
-		log.Warn().Err(err).Any("req", req).Msg("handler::getInventoriesBahanBaku - invalid request")
-		code, errs := errmsg.Errors(err, req)
-		return c.Status(code).JSON(response.Error(errs))
-	}
-
-	resp, err := h.service.GetInventoriesBahanBaku(c.Context(), req)
-	if err != nil {
-		code, errs := errmsg.Errors[error](err)
-		return c.Status(code).JSON(response.Error(errs))
-	}
-
-	return c.JSON(response.Success(resp, ""))
 }

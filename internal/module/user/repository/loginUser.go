@@ -16,6 +16,7 @@ func (r *userRepo) Login(ctx context.Context, req *entity.LoginReq) (*entity.Log
 	type user struct {
 		Id       string `db:"id"`
 		Email    string `db:"email"`
+		Name     string `db:"name"`
 		Password string `db:"password"`
 		Role     string `db:"role"`
 	}
@@ -69,6 +70,8 @@ func (r *userRepo) Login(ctx context.Context, req *entity.LoginReq) (*entity.Log
 	}
 
 	res.AccessToken = token
+	res.Name = result.Name
+	res.Role = result.Role
 
 	return res, nil
 }

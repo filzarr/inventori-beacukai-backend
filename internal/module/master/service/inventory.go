@@ -21,3 +21,6 @@ func (s *masterService) UpdateInventory(ctx context.Context, req *entity.UpdateI
 func (s *masterService) DeleteInventory(ctx context.Context, req *entity.DeleteInventoryReq) error {
 	return s.repo.DeleteInventory(ctx, req)
 }
+func (s *masterService) GetInventoriesBahanBaku(ctx context.Context, req *entity.GetInventoriesBahanBakuReq) (*entity.GetInventoriesBahanBakuResp, error) {
+	return s.repo.GetInventoriesBahanBaku(ctx, req)
+}

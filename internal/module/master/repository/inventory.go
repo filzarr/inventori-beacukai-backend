@@ -33,31 +33,10 @@ func (r *masterRepo) GetInventories(ctx context.Context, req *entity.GetInventor
 			kode_barang,
 			nama_barang,
 			kategori,
-			pemasok,
-			pembeli,
-			saldo_awal,
-			satuan,
-			stok_opname,
-			mata_uang,
-			negara_asal,
-			document_type,
-			keterangan,
-			document_status
+			jumlah
 		FROM
 			inventories  
 	`
-	if req.DocumentStatus != "" {
-		filters = append(filters, "document_status = ?")
-		args = append(args, req.DocumentStatus)
-	}
-	if req.DocumentType != "" {
-		filters = append(filters, "document_type = ?")
-		args = append(args, req.DocumentType)
-	}
-	if req.InventoriesStatus != "" {
-		filters = append(filters, "inventories_status = ?")
-		args = append(args, req.InventoriesStatus)
-	}
 	if req.Kategori != "" {
 		filters = append(filters, "kategori = ?")
 		args = append(args, req.Kategori)
@@ -101,17 +80,8 @@ func (r *masterRepo) GetInventory(ctx context.Context, req *entity.GetInventoryR
 			inventories_status,
 			kode_barang,
 			nama_barang,
-			kategori,
-			pemasok,
-			pembeli,
-			saldo_awal,
-			satuan,
-			stok_opname,
-			mata_uang,
-			negara_asal,
-			document_type,
-			keterangan,
-			document_status
+			kategori, 
+			jumlah
 		FROM
 			inventories 
 		WHERE
@@ -141,17 +111,8 @@ func (r *masterRepo) CreateInventory(ctx context.Context, req *entity.CreateInve
 			kode_barang,
 			nama_barang,
 			kategori,
-			pemasok,
-			pembeli,
-			saldo_awal,
-			satuan,
-			stok_opname,
-			mata_uang,
-			negara_asal,
-			document_type,
-			keterangan,
-			document_status
-		) VALUES (?, ?, ?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,?)
+			jumlah
+		) VALUES (?, ?, ?, ?, ?, ?)
 	`
 
 	var (
@@ -160,7 +121,7 @@ func (r *masterRepo) CreateInventory(ctx context.Context, req *entity.CreateInve
 	)
 
 	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query),
-		Id, req.InventoriesStatus, req.KodeBarang, req.NamaBarang, req.Kategori, req.Pemasok, req.Pembeli, req.SaldoAwal, req.Satuan, req.StokOpname, req.MataUang, req.NegaraAsal, req.DocumentType, req.Keterangan, req.DocumentStatus); err != nil {
+		Id, req.InventoriesStatus, req.KodeBarang, req.NamaBarang, req.Kategori, req.Jumlah); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::CreateInventory - failed to create inventory")
 		return nil, err
 	}
@@ -177,17 +138,8 @@ func (r *masterRepo) UpdateInventory(ctx context.Context, req *entity.UpdateInve
 			inventories_status = ?,
 			kode_barang = ?,
 			nama_barang = ?,
-			kategori = ?,
-			pemasok = ?,
-			pembeli = ?,
-			saldo_awal = ?,
-			satuan = ?,
-			stok_opname = ?,
-			mata_uang = ?,
-			negara_asal = ?,
-			document_type = ?,
-			keterangan = ?,
-			document_status = ?,
+			kategori = ?, 
+			jumlah = ?
 			updated_at = NOW()
 		WHERE
 			id = ?
@@ -195,7 +147,7 @@ func (r *masterRepo) UpdateInventory(ctx context.Context, req *entity.UpdateInve
 	`
 
 	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query),
-		req.InventoriesStatus, req.KodeBarang, req.NamaBarang, req.Kategori, req.Pemasok, req.Pembeli, req.SaldoAwal, req.Satuan, req.StokOpname, req.MataUang, req.NegaraAsal, req.DocumentType, req.Keterangan, req.DocumentStatus, req.Id); err != nil {
+		req.InventoriesStatus, req.KodeBarang, req.NamaBarang, req.Kategori, req.Jumlah, req.Id); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::UpdateInventory - failed to update inventory")
 		return err
 	}
@@ -219,6 +171,59 @@ func (r *masterRepo) DeleteInventory(ctx context.Context, req *entity.DeleteInve
 	}
 
 	return nil
+}
+
+func (r *masterRepo) GetInventoriesBahanBaku(ctx context.Context, req *entity.GetInventoriesBahanBakuReq) (*entity.GetInventoriesBahanBakuResp, error) {
+	type dao struct {
+		TotalData int `db:"total_data"`
+		entity.Inventory
+	}
+
+	var (
+		resp    = new(entity.GetInventoriesBahanBakuResp)
+		data    = make([]dao, 0)
+		args    = make([]any, 0, 3)
+		filters = []string{"deleted_at IS NULL AND (kategori = 'Bahan Baku' OR kategori = 'Bahan Penolong')"}
+	)
+	resp.Items = make([]entity.Inventory, 0)
+
+	query := `
+		SELECT
+			COUNT (*) OVER() AS total_data,
+			id,
+			inventories_status,
+			kode_barang,
+			nama_barang,
+			kategori,
+			jumlah
+		FROM
+			inventories  
+	`
+	if req.Q != "" {
+		filters = append(filters, "nama_barang ILIKE '%' || ? || '%'")
+		args = append(args, req.Q)
+	}
+
+	if len(filters) > 0 {
+		query += " WHERE " + joinFilters(filters)
+	}
+
+	query += ` LIMIT ? OFFSET ?`
+	args = append(args, req.Paginate, (req.Page-1)*req.Paginate)
+	log.Debug().Any("args", args).Msg("Parsed Query")
+	if err := r.db.SelectContext(ctx, &data, r.db.Rebind(query), args...); err != nil {
+		log.Error().Err(err).Any("req", req).Msg("repo::GetInventory - failed to query Inventory")
+		return nil, err
+	}
+
+	for _, d := range data {
+		resp.Meta.TotalData = d.TotalData
+		resp.Items = append(resp.Items, d.Inventory)
+	}
+
+	resp.Meta.CountTotalPage(req.Page, req.Paginate, resp.Meta.TotalData)
+
+	return resp, nil
 }
 func joinFilters(filters []string) string {
 	return strings.Join(filters, " AND ")
