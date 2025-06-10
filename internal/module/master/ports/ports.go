@@ -6,54 +6,157 @@ import (
 )
 
 type MasterRepository interface {
+	// Users
 	GetUsers(ctx context.Context, req *entity.GetUsersReq) (*entity.GetUsersResp, error)
-	// Inventories
-	GetInventories(ctx context.Context, req *entity.GetInventoriesReq) (*entity.GetInventoriesResp, error)
-	GetInventory(ctx context.Context, req *entity.GetInventoryReq) (*entity.GetInventoryResp, error)
-	CreateInventory(ctx context.Context, req *entity.CreateInventoryReq) (*entity.CreateInventoryResp, error)
-	UpdateInventory(ctx context.Context, req *entity.UpdateInventoryReq) error
-	DeleteInventory(ctx context.Context, req *entity.DeleteInventoryReq) error
-	GetInventoriesBahanBaku(ctx context.Context, req *entity.GetInventoriesBahanBakuReq) (*entity.GetInventoriesBahanBakuResp, error)
 
-	// Gudang
-	GetGudangs(ctx context.Context, req *entity.GetGudangsReq) (*entity.GetGudangsResp, error)
-	GetGudang(ctx context.Context, req *entity.GetGudangReq) (*entity.GetGudangResp, error)
-	CreateGudang(ctx context.Context, req *entity.CreateGudangReq) (*entity.CreateGudangResp, error)
-	UpdateGudang(ctx context.Context, req *entity.UpdateGudangReq) error
-	DeleteGudang(ctx context.Context, req *entity.DeleteGudangReq) error
-	// mutasi bahan baku
-	GetMutasiBahans(ctx context.Context, req *entity.GetMutasiBahansReq) (*entity.GetMutasiBahansResp, error)
-	GetMutasiBahan(ctx context.Context, req *entity.GetMutasiBahanReq) (*entity.GetMutasiBahanResp, error)
-	CreateMutasiBahan(ctx context.Context, req *entity.CreateMutasiBahanReq) (*entity.CreateMutasiBahanResp, error)
-	UpdateMutasiBahan(ctx context.Context, req *entity.UpdateMutasiBahanReq) error
-	DeleteMutasiBahan(ctx context.Context, req *entity.DeleteMutasiBahanReq) error
-	UpdateStatusMutasiBahan(ctx context.Context, req *entity.UpdateStatusMutasiBahanReq) error
-	UpdateSaldoMutasi(ctx context.Context, req *entity.UpdateSaldoMutasiReq) error
-	GetLaporanMutasiBahan(ctx context.Context, req *entity.GetLaporanMutasiBahanReq) (*entity.GetLaporanMutasiBahanResp, error)
+	// Supliers
+	GetSupliers(ctx context.Context, req *entity.GetSupliersReq) (*entity.GetSupliersResp, error)
+	GetSuplier(ctx context.Context, req *entity.GetSuplierReq) (*entity.GetSuplierResp, error)
+	CreateSuplier(ctx context.Context, req *entity.CreateSuplierReq) (*entity.CreateSuplierResp, error)
+	UpdateSuplier(ctx context.Context, req *entity.UpdateSuplierReq) error
+	DeleteSuplier(ctx context.Context, req *entity.DeleteSuplierReq) error
+
+	// Products
+	GetProducts(ctx context.Context, req *entity.GetProductsReq) (*entity.GetProductsResp, error)
+	GetProduct(ctx context.Context, req *entity.GetProductReq) (*entity.GetProductResp, error)
+	CreateProduct(ctx context.Context, req *entity.CreateProductReq) (*entity.CreateProductResp, error)
+	UpdateProduct(ctx context.Context, req *entity.UpdateProductReq) error
+	DeleteProduct(ctx context.Context, req *entity.DeleteProductReq) error
+
+	// Currencies
+	GetCurrencies(ctx context.Context, req *entity.GetCurrenciesReq) (*entity.GetCurrenciesResp, error)
+	GetCurrency(ctx context.Context, req *entity.GetCurrencyReq) (*entity.GetCurrencyResp, error)
+	CreateCurrency(ctx context.Context, req *entity.CreateCurrencyReq) (*entity.CreateCurrencyResp, error)
+	UpdateCurrency(ctx context.Context, req *entity.UpdateCurrencyReq) error
+	DeleteCurrency(ctx context.Context, req *entity.DeleteCurrencyReq) error
+
+	// BCDocuments
+	GetBcDocuments(ctx context.Context, req *entity.GetBcDocumentsReq) (*entity.GetBcDocumentsResp, error)
+	GetBcDocument(ctx context.Context, req *entity.GetBcDocumentReq) (*entity.GetBcDocumentResp, error)
+	CreateBcDocument(ctx context.Context, req *entity.CreateBcDocumentReq) (*entity.CreateBcDocumentResp, error)
+	UpdateBcDocument(ctx context.Context, req *entity.UpdateBcDocumentReq) error
+	DeleteBcDocument(ctx context.Context, req *entity.DeleteBcDocumentReq) error
+
+	// Contracts
+	GetContracts(ctx context.Context, req *entity.GetContractsReq) (*entity.GetContractsResp, error)
+	GetContract(ctx context.Context, req *entity.GetContractReq) (*entity.GetContractResp, error)
+	CreateContract(ctx context.Context, req *entity.CreateContractReq) (*entity.CreateContractResp, error)
+	UpdateContract(ctx context.Context, req *entity.UpdateContractReq) error
+	DeleteContract(ctx context.Context, req *entity.DeleteContractReq) error
+
+	// SaldoAwal
+	GetSaldoAwals(ctx context.Context, req *entity.GetSaldoAwalsReq) (*entity.GetSaldoAwalsResp, error)
+	GetSaldoAwal(ctx context.Context, req *entity.GetSaldoAwalReq) (*entity.GetSaldoAwalResp, error)
+	CreateSaldoAwal(ctx context.Context, req *entity.CreateSaldoAwalReq) (*entity.CreateSaldoAwalResp, error)
+	UpdateSaldoAwal(ctx context.Context, req *entity.UpdateSaldoAwalReq) error
+	DeleteSaldoAwal(ctx context.Context, req *entity.DeleteSaldoAwalReq) error
+
+	// ContractProducts
+	GetContractProducts(ctx context.Context, req *entity.GetContractProductsReq) (*entity.GetContractProductsResp, error)
+	GetContractProduct(ctx context.Context, req *entity.GetContractProductReq) (*entity.GetContractProductResp, error)
+	CreateContractProduct(ctx context.Context, req *entity.CreateContractProductReq) (*entity.CreateContractProductResp, error)
+	UpdateContractProduct(ctx context.Context, req *entity.UpdateContractProductReq) error
+	DeleteContractProduct(ctx context.Context, req *entity.DeleteContractProductReq) error
+
+	// IncomeInventories
+	GetIncomeInventories(ctx context.Context, req *entity.GetIncomeInventoriesReq) (*entity.GetIncomeInventoriesResp, error)
+	GetIncomeInventory(ctx context.Context, req *entity.GetIncomeInventoryReq) (*entity.GetIncomeInventoryResp, error)
+	CreateIncomeInventory(ctx context.Context, req *entity.CreateIncomeInventoryReq) (*entity.CreateIncomeInventoryResp, error)
+	UpdateIncomeInventory(ctx context.Context, req *entity.UpdateIncomeInventoryReq) error
+	DeleteIncomeInventory(ctx context.Context, req *entity.DeleteIncomeInventoryReq) error
+
+	// IncomeInventoryProducts
+	GetIncomeInventoryProducts(ctx context.Context, req *entity.GetIncomeInventoryProductsReq) (*entity.GetIncomeInventoryProductsResp, error)
+	GetIncomeInventoryProduct(ctx context.Context, req *entity.GetIncomeInventoryProductReq) (*entity.GetIncomeInventoryProductResp, error)
+	CreateIncomeInventoryProduct(ctx context.Context, req *entity.CreateIncomeInventoryProductReq) (*entity.CreateIncomeInventoryProductResp, error)
+	UpdateIncomeInventoryProduct(ctx context.Context, req *entity.UpdateIncomeInventoryProductReq) error
+	DeleteIncomeInventoryProduct(ctx context.Context, req *entity.DeleteIncomeInventoryProductReq) error
+
+	// TransactionIncomes
+	GetTransactionIncomes(ctx context.Context, req *entity.GetTransactionIncomesReq) (*entity.GetTransactionIncomesResp, error)
+	GetTransactionIncome(ctx context.Context, req *entity.GetTransactionIncomeReq) (*entity.GetTransactionIncomeResp, error)
+	CreateTransactionIncome(ctx context.Context, req *entity.CreateTransactionIncomeReq) (*entity.CreateTransactionIncomeResp, error)
+	UpdateTransactionIncome(ctx context.Context, req *entity.UpdateTransactionIncomeReq) error
+	DeleteTransactionIncome(ctx context.Context, req *entity.DeleteTransactionIncomeReq) error
+
+	// Laporan
+	GetLaporanMutasi(ctx context.Context, req *entity.GetLaporanMutasiReq) (*entity.GetLaporanMutasiResp, error)
 }
 
 type MasterService interface {
+	// Users
 	GetUsers(ctx context.Context, req *entity.GetUsersReq) (*entity.GetUsersResp, error)
-	GetInventories(ctx context.Context, req *entity.GetInventoriesReq) (*entity.GetInventoriesResp, error)
-	GetInventory(ctx context.Context, req *entity.GetInventoryReq) (*entity.GetInventoryResp, error)
-	CreateInventory(ctx context.Context, req *entity.CreateInventoryReq) (*entity.CreateInventoryResp, error)
-	UpdateInventory(ctx context.Context, req *entity.UpdateInventoryReq) error
-	DeleteInventory(ctx context.Context, req *entity.DeleteInventoryReq) error
-	GetInventoriesBahanBaku(ctx context.Context, req *entity.GetInventoriesBahanBakuReq) (*entity.GetInventoriesBahanBakuResp, error)
 
-	// Gudang
-	GetGudangs(ctx context.Context, req *entity.GetGudangsReq) (*entity.GetGudangsResp, error)
-	GetGudang(ctx context.Context, req *entity.GetGudangReq) (*entity.GetGudangResp, error)
-	CreateGudang(ctx context.Context, req *entity.CreateGudangReq) (*entity.CreateGudangResp, error)
-	UpdateGudang(ctx context.Context, req *entity.UpdateGudangReq) error
-	DeleteGudang(ctx context.Context, req *entity.DeleteGudangReq) error
-	// mutasi bahan baku
-	GetMutasiBahans(ctx context.Context, req *entity.GetMutasiBahansReq) (*entity.GetMutasiBahansResp, error)
-	GetMutasiBahan(ctx context.Context, req *entity.GetMutasiBahanReq) (*entity.GetMutasiBahanResp, error)
-	CreateMutasiBahan(ctx context.Context, req *entity.CreateMutasiBahanReq) (*entity.CreateMutasiBahanResp, error)
-	UpdateMutasiBahan(ctx context.Context, req *entity.UpdateMutasiBahanReq) error
-	DeleteMutasiBahan(ctx context.Context, req *entity.DeleteMutasiBahanReq) error
-	UpdateStatusMutasiBahan(ctx context.Context, req *entity.UpdateStatusMutasiBahanReq) error
-	UpdateSaldoMutasi(ctx context.Context, req *entity.UpdateSaldoMutasiReq) error
-	GetLaporanMutasiBahan(ctx context.Context, req *entity.GetLaporanMutasiBahanReq) (*entity.GetLaporanMutasiBahanResp, error)
+	// Supliers
+	GetSupliers(ctx context.Context, req *entity.GetSupliersReq) (*entity.GetSupliersResp, error)
+	GetSuplier(ctx context.Context, req *entity.GetSuplierReq) (*entity.GetSuplierResp, error)
+	CreateSuplier(ctx context.Context, req *entity.CreateSuplierReq) (*entity.CreateSuplierResp, error)
+	UpdateSuplier(ctx context.Context, req *entity.UpdateSuplierReq) error
+	DeleteSuplier(ctx context.Context, req *entity.DeleteSuplierReq) error
+
+	// Products
+	GetProducts(ctx context.Context, req *entity.GetProductsReq) (*entity.GetProductsResp, error)
+	GetProduct(ctx context.Context, req *entity.GetProductReq) (*entity.GetProductResp, error)
+	CreateProduct(ctx context.Context, req *entity.CreateProductReq) (*entity.CreateProductResp, error)
+	UpdateProduct(ctx context.Context, req *entity.UpdateProductReq) error
+	DeleteProduct(ctx context.Context, req *entity.DeleteProductReq) error
+
+	// Currencies
+	GetCurrencies(ctx context.Context, req *entity.GetCurrenciesReq) (*entity.GetCurrenciesResp, error)
+	GetCurrency(ctx context.Context, req *entity.GetCurrencyReq) (*entity.GetCurrencyResp, error)
+	CreateCurrency(ctx context.Context, req *entity.CreateCurrencyReq) (*entity.CreateCurrencyResp, error)
+	UpdateCurrency(ctx context.Context, req *entity.UpdateCurrencyReq) error
+	DeleteCurrency(ctx context.Context, req *entity.DeleteCurrencyReq) error
+
+	// BCDocuments
+	GetBcDocuments(ctx context.Context, req *entity.GetBcDocumentsReq) (*entity.GetBcDocumentsResp, error)
+	GetBcDocument(ctx context.Context, req *entity.GetBcDocumentReq) (*entity.GetBcDocumentResp, error)
+	CreateBcDocument(ctx context.Context, req *entity.CreateBcDocumentReq) (*entity.CreateBcDocumentResp, error)
+	UpdateBcDocument(ctx context.Context, req *entity.UpdateBcDocumentReq) error
+	DeleteBcDocument(ctx context.Context, req *entity.DeleteBcDocumentReq) error
+
+	// Contracts
+	GetContracts(ctx context.Context, req *entity.GetContractsReq) (*entity.GetContractsResp, error)
+	GetContract(ctx context.Context, req *entity.GetContractReq) (*entity.GetContractResp, error)
+	CreateContract(ctx context.Context, req *entity.CreateContractReq) (*entity.CreateContractResp, error)
+	UpdateContract(ctx context.Context, req *entity.UpdateContractReq) error
+	DeleteContract(ctx context.Context, req *entity.DeleteContractReq) error
+
+	// SaldoAwal
+	GetSaldoAwals(ctx context.Context, req *entity.GetSaldoAwalsReq) (*entity.GetSaldoAwalsResp, error)
+	GetSaldoAwal(ctx context.Context, req *entity.GetSaldoAwalReq) (*entity.GetSaldoAwalResp, error)
+	CreateSaldoAwal(ctx context.Context, req *entity.CreateSaldoAwalReq) (*entity.CreateSaldoAwalResp, error)
+	UpdateSaldoAwal(ctx context.Context, req *entity.UpdateSaldoAwalReq) error
+	DeleteSaldoAwal(ctx context.Context, req *entity.DeleteSaldoAwalReq) error
+
+	// ContractProducts
+	GetContractProducts(ctx context.Context, req *entity.GetContractProductsReq) (*entity.GetContractProductsResp, error)
+	GetContractProduct(ctx context.Context, req *entity.GetContractProductReq) (*entity.GetContractProductResp, error)
+	CreateContractProduct(ctx context.Context, req *entity.CreateContractProductReq) (*entity.CreateContractProductResp, error)
+	UpdateContractProduct(ctx context.Context, req *entity.UpdateContractProductReq) error
+	DeleteContractProduct(ctx context.Context, req *entity.DeleteContractProductReq) error
+
+	// IncomeInventories
+	GetIncomeInventories(ctx context.Context, req *entity.GetIncomeInventoriesReq) (*entity.GetIncomeInventoriesResp, error)
+	GetIncomeInventory(ctx context.Context, req *entity.GetIncomeInventoryReq) (*entity.GetIncomeInventoryResp, error)
+	CreateIncomeInventory(ctx context.Context, req *entity.CreateIncomeInventoryReq) (*entity.CreateIncomeInventoryResp, error)
+	UpdateIncomeInventory(ctx context.Context, req *entity.UpdateIncomeInventoryReq) error
+	DeleteIncomeInventory(ctx context.Context, req *entity.DeleteIncomeInventoryReq) error
+
+	// IncomeInventoryProducts
+	GetIncomeInventoryProducts(ctx context.Context, req *entity.GetIncomeInventoryProductsReq) (*entity.GetIncomeInventoryProductsResp, error)
+	GetIncomeInventoryProduct(ctx context.Context, req *entity.GetIncomeInventoryProductReq) (*entity.GetIncomeInventoryProductResp, error)
+	CreateIncomeInventoryProduct(ctx context.Context, req *entity.CreateIncomeInventoryProductReq) (*entity.CreateIncomeInventoryProductResp, error)
+	UpdateIncomeInventoryProduct(ctx context.Context, req *entity.UpdateIncomeInventoryProductReq) error
+	DeleteIncomeInventoryProduct(ctx context.Context, req *entity.DeleteIncomeInventoryProductReq) error
+
+	// TransactionIncomes
+	GetTransactionIncomes(ctx context.Context, req *entity.GetTransactionIncomesReq) (*entity.GetTransactionIncomesResp, error)
+	GetTransactionIncome(ctx context.Context, req *entity.GetTransactionIncomeReq) (*entity.GetTransactionIncomeResp, error)
+	CreateTransactionIncome(ctx context.Context, req *entity.CreateTransactionIncomeReq) (*entity.CreateTransactionIncomeResp, error)
+	UpdateTransactionIncome(ctx context.Context, req *entity.UpdateTransactionIncomeReq) error
+	DeleteTransactionIncome(ctx context.Context, req *entity.DeleteTransactionIncomeReq) error
+
+	// Laporan
+	GetLaporanMutasi(ctx context.Context, req *entity.GetLaporanMutasiReq) (*entity.GetLaporanMutasiResp, error)
 }

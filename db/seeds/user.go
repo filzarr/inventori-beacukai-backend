@@ -13,7 +13,7 @@ func (s *Seed) userSeed() {
 		log.Error().Err(err).Msg("Error hash password")
 	}
 	userMaps := []map[string]any{
-		{"id": "01J3X0H3TK5MWPXK9D8GDRVZ10", "name": "Super Admin", "email": "superadmin@gmail.com", "password": hash, "role_id": "01J3X0H3TK5MWPXK9D8GDRFZY9"},
+		{"id": "01J3X0H3TK5MWPXK9D8GDRVZ10", "name": "Super Admin", "email": "superadmin@gmail.com", "password": hash, "superadmin": "TRUE", "role_id": "01J3X0H3TK5MWPXK9D8GDRFZY9"},
 	}
 
 	tx, err := s.db.BeginTxx(context.Background(), nil)
@@ -34,8 +34,8 @@ func (s *Seed) userSeed() {
 	}()
 
 	_, err = tx.NamedExec(`
-		INSERT INTO users (id, name, email, password, role_id)
-		VALUES (:id, :name, :email, :password, :role_id)
+		INSERT INTO users (id, name, email, password, superadmin, role_id)
+		VALUES (:id, :name, :email, :password,:superadmin, :role_id)
 	`, userMaps)
 	if err != nil {
 		log.Error().Err(err).Msg("Error creating roles")
