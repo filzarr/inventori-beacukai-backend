@@ -12,7 +12,7 @@ BEGIN
     END IF;
 END$$;
 
-CREATE TABLE IF NOT EXISTS n (
+CREATE TABLE IF NOT EXISTS bc_documents (
     id CHAR(26) PRIMARY KEY,
     kategori kategori_bc NOT NULL,
     no_document CHAR(50) NOT NULL,
