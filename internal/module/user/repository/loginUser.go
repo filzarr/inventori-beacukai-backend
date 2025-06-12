@@ -29,6 +29,7 @@ func (r *userRepo) Login(ctx context.Context, req *entity.LoginReq) (*entity.Log
 		SELECT
 			u.id,
 			u.email,
+			u.name,
 			u.password,
 			r.name as role
 		FROM
@@ -71,6 +72,7 @@ func (r *userRepo) Login(ctx context.Context, req *entity.LoginReq) (*entity.Log
 
 	res.AccessToken = token
 	res.Name = result.Name
+	res.Email = result.Email
 	res.Role = result.Role
 
 	return res, nil

@@ -79,6 +79,13 @@ type MasterRepository interface {
 	UpdateTransactionIncome(ctx context.Context, req *entity.UpdateTransactionIncomeReq) error
 	DeleteTransactionIncome(ctx context.Context, req *entity.DeleteTransactionIncomeReq) error
 
+	// ReadyProducts
+	GetReadyProducts(ctx context.Context, req *entity.GetReadyProductsReq) (*entity.GetReadyProductsResp, error)
+	GetReadyProduct(ctx context.Context, req *entity.GetReadyProductReq) (*entity.GetReadyProductResp, error)
+	CreateReadyProduct(ctx context.Context, req *entity.CreateReadyProductReq) (*entity.CreateReadyProductResp, error)
+	UpdateReadyProduct(ctx context.Context, req *entity.UpdateReadyProductReq) error
+	DeleteReadyProduct(ctx context.Context, req *entity.DeleteReadyProductReq) error
+
 	// Laporan
 	GetLaporanMutasi(ctx context.Context, req *entity.GetLaporanMutasiReq) (*entity.GetLaporanMutasiResp, error)
 }
@@ -156,6 +163,13 @@ type MasterService interface {
 	CreateTransactionIncome(ctx context.Context, req *entity.CreateTransactionIncomeReq) (*entity.CreateTransactionIncomeResp, error)
 	UpdateTransactionIncome(ctx context.Context, req *entity.UpdateTransactionIncomeReq) error
 	DeleteTransactionIncome(ctx context.Context, req *entity.DeleteTransactionIncomeReq) error
+
+	// ReadyProducts
+	GetReadyProducts(ctx context.Context, req *entity.GetReadyProductsReq) (*entity.GetReadyProductsResp, error)
+	GetReadyProduct(ctx context.Context, req *entity.GetReadyProductReq) (*entity.GetReadyProductResp, error)
+	CreateReadyProduct(ctx context.Context, req *entity.CreateReadyProductReq) (*entity.CreateReadyProductResp, error)
+	UpdateReadyProduct(ctx context.Context, req *entity.UpdateReadyProductReq) error
+	DeleteReadyProduct(ctx context.Context, req *entity.DeleteReadyProductReq) error
 
 	// Laporan
 	GetLaporanMutasi(ctx context.Context, req *entity.GetLaporanMutasiReq) (*entity.GetLaporanMutasiResp, error)

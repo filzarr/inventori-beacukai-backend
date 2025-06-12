@@ -95,6 +95,13 @@ func (h *MasterHandler) Register(router fiber.Router) {
 	router.Put("/transaction-incomes/:id", h.updateTransactionIncome)
 	router.Delete("/transaction-incomes/:id", h.deleteTransactionIncome)
 
+	// ready_products
+	router.Get("/ready-products", h.getReadyProducts)
+	router.Get("/ready-products/:id", h.getReadyProduct)
+	router.Post("/ready-products", h.createReadyProduct)
+	router.Put("/ready-products/:id", h.updateReadyProduct)
+	router.Delete("/ready-products/:id", h.deleteReadyProduct)
+
 	// laporan
 	router.Get("/laporan-mutasi", h.getLaporanMutasi)
 }
