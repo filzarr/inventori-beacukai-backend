@@ -86,6 +86,13 @@ type MasterRepository interface {
 	UpdateReadyProduct(ctx context.Context, req *entity.UpdateReadyProductReq) error
 	DeleteReadyProduct(ctx context.Context, req *entity.DeleteReadyProductReq) error
 
+	// Buyers
+	GetBuyers(ctx context.Context, req *entity.GetBuyersReq) (*entity.GetBuyersResp, error)
+	GetBuyer(ctx context.Context, req *entity.GetBuyerReq) (*entity.GetBuyerResp, error)
+	CreateBuyer(ctx context.Context, req *entity.CreateBuyerReq) (*entity.CreateBuyerResp, error)
+	UpdateBuyer(ctx context.Context, req *entity.UpdateBuyerReq) error
+	DeleteBuyer(ctx context.Context, req *entity.DeleteBuyerReq) error
+
 	// Laporan
 	GetLaporanMutasi(ctx context.Context, req *entity.GetLaporanMutasiReq) (*entity.GetLaporanMutasiResp, error)
 }
@@ -170,6 +177,13 @@ type MasterService interface {
 	CreateReadyProduct(ctx context.Context, req *entity.CreateReadyProductReq) (*entity.CreateReadyProductResp, error)
 	UpdateReadyProduct(ctx context.Context, req *entity.UpdateReadyProductReq) error
 	DeleteReadyProduct(ctx context.Context, req *entity.DeleteReadyProductReq) error
+
+	// Buyers
+	GetBuyers(ctx context.Context, req *entity.GetBuyersReq) (*entity.GetBuyersResp, error)
+	GetBuyer(ctx context.Context, req *entity.GetBuyerReq) (*entity.GetBuyerResp, error)
+	CreateBuyer(ctx context.Context, req *entity.CreateBuyerReq) (*entity.CreateBuyerResp, error)
+	UpdateBuyer(ctx context.Context, req *entity.UpdateBuyerReq) error
+	DeleteBuyer(ctx context.Context, req *entity.DeleteBuyerReq) error
 
 	// Laporan
 	GetLaporanMutasi(ctx context.Context, req *entity.GetLaporanMutasiReq) (*entity.GetLaporanMutasiResp, error)
