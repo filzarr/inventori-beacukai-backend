@@ -22,9 +22,8 @@ func (r *masterRepo) GetTransactionIncomes(ctx context.Context, req *entity.GetT
 		args  = make([]any, 0, 3)
 		query = `
 			SELECT COUNT(*) OVER() AS total_data,
-				   t.id, b.kategori AS kode_document_bc ,b.no_document AS no_document, b.tanggal AS tgl_document_bc,  t.no_kontrak, c.kategori AS kategori_barang, t.kode_barang, p.nama AS nama_barang, t.jumlah
+				   t.id, b.kategori AS kode_document_bc ,b.no_document AS no_document, b.tanggal AS tgl_document_bc,  t.no_kontrak
 			FROM transaction_incomes t
-			JOIN products p ON t.kode_barang = p.kode
 			JOIN contracts c ON t.no_kontrak = c.no_kontrak
 			JOIN bc_documents b ON t.no_document = b.no_document
 			WHERE t.deleted_at IS NULL`
@@ -79,8 +78,8 @@ func (r *masterRepo) GetTransactionIncome(ctx context.Context, req *entity.GetTr
 
 func (r *masterRepo) CreateTransactionIncome(ctx context.Context, req *entity.CreateTransactionIncomeReq) (*entity.CreateTransactionIncomeResp, error) {
 	query := `
-		INSERT INTO transaction_incomes (id, no_kontrak, no_document, kode_barang, jumlah)
-		VALUES (?, ?, ?, ?, ?)`
+		INSERT INTO transaction_incomes (id, no_kontrak, no_document)
+		VALUES (?, ?, ?)`
 
 	updateStockQuery := `
 		UPDATE products
@@ -97,7 +96,7 @@ func (r *masterRepo) CreateTransactionIncome(ctx context.Context, req *entity.Cr
 	defer tx.Rollback()
 
 	// Insert ke transaction_incomes
-	if _, err := tx.ExecContext(ctx, tx.Rebind(query), id, req.NoKontrak, req.NoDocumentBc, req.KodeBarang, req.Jumlah); err != nil {
+	if _, err := tx.ExecContext(ctx, tx.Rebind(query), id, req.NoKontrak, req.NoDocumentBc); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::CreateTransactionIncome - failed to insert")
 		return nil, err
 	}

@@ -39,3 +39,7 @@ type RegisterResp struct {
 	Role     string `json:"role"`
 	Password string `json:"password"`
 }
+
+type UpdateUserReq struct {
+	Id string `json:"id"`
+}

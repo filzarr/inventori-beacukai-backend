@@ -17,10 +17,6 @@ type TransactionIncome struct {
 	NoDocumentBc   string `json:"no_document" db:"no_document"`
 	TglDocumentBc  string `json:"tgl_document_bc" db:"tgl_document_bc"`
 	NoKontrak      string `json:"no_kontrak" db:"no_kontrak"`
-	Kategori       string `json:"kategori_barang" db:"kategori_barang"`
-	KodeBarang     string `json:"kode_barang" db:"kode_barang"`
-	NamaBarang     string `json:"nama_barang" db:"nama_barang"`
-	Jumlah         int    `json:"jumlah" db:"jumlah"`
 }
 
 type GetTransactionIncomesResp struct {
