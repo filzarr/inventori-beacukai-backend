@@ -26,26 +26,18 @@ func (r *masterRepo) GetIncomeInventoryProducts(ctx context.Context, req *entity
 	resp.Items = make([]entity.IncomeInventoryProduct, 0)
 
 	query := `
-		SELECT
-			COUNT(*) OVER() AS total_data,
-			iip.id,
-			iip.id_inventories,
-			iip.kode_barang,
-			iip.stok_awal AS saldo_awal,
-			i.no_kontrak AS no_kontrak,
-			p.nama as nama_barang,
-			iip.jumlah AS jumlah_masuk,
-			c.jumlah AS jumlah_kontrak
-		FROM
-			income_inventories_products iip
-		JOIN
-			income_inventories i ON iip.id_inventories = i.id
-		JOIN 
-			contract_products c ON c.kode_barang = iip.kode_barang
-		JOIN
-			products p ON iip.kode_barang = p.kode
-		WHERE
-			iip.deleted_at IS NULL
+		SELECT DISTINCT ON (iip.id)
+		COUNT(*) OVER() AS total_data,
+		iip.id,
+		iip.kode_barang,
+		p.nama AS nama_barang,
+		cp.jumlah AS jumlah_kontrak,
+		iip.no_kontrak AS no_kontrak,
+		iip.jumlah AS jumlah_masuk
+		FROM income_inventories_products iip
+		JOIN products p ON iip.kode_barang = p.kode
+		JOIN contract_products cp ON iip.no_kontrak = cp.no_kontrak
+		WHERE iip.deleted_at IS NULL 
 	`
 
 	if req.Q != "" {
@@ -112,7 +104,7 @@ func (r *masterRepo) CreateIncomeInventoryProduct(ctx context.Context, req *enti
 	query := `
 		INSERT INTO income_inventories_products (
 			id,
-			id_inventories,
+			no_kontrak,
 			kode_barang,
 			stok_awal,
 			jumlah
@@ -132,7 +124,7 @@ func (r *masterRepo) CreateIncomeInventoryProduct(ctx context.Context, req *enti
 	defer tx.Rollback()
 
 	// Insert ke income_inventories_products
-	if _, err := tx.ExecContext(ctx, tx.Rebind(query), Id, req.IdInventories, req.KodeBarang, req.SaldoAwal, req.Jumlah); err != nil {
+	if _, err := tx.ExecContext(ctx, tx.Rebind(query), Id, req.NoKontrak, req.KodeBarang, req.SaldoAwal, req.Jumlah); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::CreateIncomeInventoryProduct - failed to insert")
 		return nil, err
 	}
@@ -162,7 +154,7 @@ func (r *masterRepo) UpdateIncomeInventoryProduct(ctx context.Context, req *enti
 	query := `
 		UPDATE income_inventories_products
 		SET
-			id_inventories = ?,
+			no_kontrak = ?,
 			kode_barang = ?,
 			jumlah = ?,
 			updated_at = NOW()
@@ -171,7 +163,7 @@ func (r *masterRepo) UpdateIncomeInventoryProduct(ctx context.Context, req *enti
 			AND deleted_at IS NULL
 	`
 
-	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), req.IdInventories, req.KodeBarang, req.Jumlah, req.Id); err != nil {
+	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), req.NoKontrak, req.KodeBarang, req.Jumlah, req.Id); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::UpdateIncomeInventoryProduct - failed to update")
 		return err
 	}

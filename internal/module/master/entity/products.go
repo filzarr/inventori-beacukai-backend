@@ -13,10 +13,12 @@ func (r *GetProductsReq) SetDefault() {
 
 type Product struct {
 	Common
-	Kode     string `json:"kode" db:"kode"`
-	Nama     string `json:"nama" db:"nama"`
-	Kategori string `json:"kategori" db:"kategori"`
-	Jumlah   int    `json:"jumlah" db:"jumlah"`
+	Kode      string `json:"kode" db:"kode"`
+	Nama      string `json:"nama" db:"nama"`
+	Satuan    string `json:"satuan" db:"satuan"`
+	Kategori  string `json:"kategori" db:"kategori"`
+	SaldoAwal int    `json:"saldo_awal" db:"saldo_awal"`
+	Jumlah    int    `json:"jumlah" db:"jumlah"`
 }
 
 type GetProductsResp struct {
@@ -33,10 +35,11 @@ type GetProductResp struct {
 }
 
 type CreateProductReq struct {
-	Kode     string `json:"kode" validate:"required,min=3"`
-	Nama     string `json:"nama" validate:"required,min=3"`
-	Kategori string `json:"kategori" validate:"required,oneof='Bahan Baku' 'Bahan Penolong' 'Mesin/Sparepart'"`
-	Jumlah   int    `json:"jumlah" validate:"min=0"`
+	Kode      string `json:"kode" validate:"required,min=3"`
+	Nama      string `json:"nama" validate:"required,min=3"`
+	Satuan    string `json:"satuan" validate:"required"`
+	Kategori  string `json:"kategori" validate:"required,oneof='Bahan Baku' 'Bahan Penolong' 'Mesin/Sparepart'"`
+	SaldoAwal int    `json:"saldo_awal" validate:"required"`
 }
 
 type CreateProductResp struct {
@@ -44,11 +47,13 @@ type CreateProductResp struct {
 }
 
 type UpdateProductReq struct {
-	Id       string `params:"id" validate:"required"`
-	Kode     string `json:"kode" validate:"required,min=3"`
-	Nama     string `json:"nama" validate:"required,min=3"`
-	Kategori string `json:"kategori" validate:"required,oneof='Bahan Baku' 'Bahan Penolong' 'Mesin/Sparepart'"`
-	Jumlah   int    `json:"jumlah" validate:"min=0"`
+	Id        string `params:"id" validate:"required"`
+	Kode      string `json:"kode" validate:"required,min=3"`
+	Nama      string `json:"nama" validate:"required,min=3"`
+	Satuan    string `json:"satuan" validate:"required"`
+	Kategori  string `json:"kategori" validate:"required,oneof='Bahan Baku' 'Bahan Penolong' 'Mesin/Sparepart'"`
+	SaldoAwal int    `json:"saldo_awal" validate:"required"`
+	Jumlah    int    `json:"jumlah" validate:"min=0"`
 }
 
 type DeleteProductReq struct {

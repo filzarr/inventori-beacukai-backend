@@ -35,7 +35,6 @@ type GetTransactionIncomeResp struct {
 type CreateTransactionIncomeReq struct {
 	NoKontrak    string `json:"no_kontrak" validate:"required"`
 	NoDocumentBc string `json:"no_document" db:"no_document"`
-	KodeBarang   string `json:"kode_barang" validate:"required"`
 	Jumlah       int    `json:"jumlah" validate:"min=0"`
 }
 
@@ -44,10 +43,9 @@ type CreateTransactionIncomeResp struct {
 }
 
 type UpdateTransactionIncomeReq struct {
-	Id         string `params:"id" validate:"required"`
-	NoKontrak  string `json:"no_kontrak" validate:"required"`
-	KodeBarang string `json:"kode_barang" validate:"required"`
-	Jumlah     int    `json:"jumlah" validate:"min=0"`
+	Id        string `params:"id" validate:"required"`
+	NoKontrak string `json:"no_kontrak" validate:"required"`
+	Jumlah    int    `json:"jumlah" validate:"min=0"`
 }
 
 type DeleteTransactionIncomeReq struct {

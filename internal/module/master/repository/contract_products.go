@@ -50,8 +50,7 @@ func (r *masterRepo) GetContractProducts(ctx context.Context, req *entity.GetCon
 			p.jumlah AS stok,
 			p.nama AS nama_barang,
 			s.name AS nama_pemasok,
-			s.alamat,
-			cp.satuan,
+			s.alamat, 
 			cp.harga_satuan,
 			cp.kode_mata_uang,
 			cp.nilai_barang_fog,
@@ -98,8 +97,7 @@ func (r *masterRepo) GetContractProduct(ctx context.Context, req *entity.GetCont
 			cp.jumlah,
 			p.nama AS nama_barang,
 			s.name AS nama_pemasok,
-			s.alamat AS alamat,
-			cp.satuan,
+			s.alamat AS alamat, 
 			cp.harga_satuan,
 			cp.kode_mata_uang,
 			cp.nilai_barang_fog,
@@ -130,8 +128,8 @@ func (r *masterRepo) GetContractProduct(ctx context.Context, req *entity.GetCont
 func (r *masterRepo) CreateContractProduct(ctx context.Context, req *entity.CreateContractProductReq) (*entity.CreateContractProductResp, error) {
 	query := `
 		INSERT INTO contract_products (
-			id, no_kontrak, kode_barang, jumlah, satuan, harga_satuan, kode_mata_uang, nilai_barang_fog, nilai_barang_rp
-		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+			id, no_kontrak, kode_barang, jumlah, harga_satuan, kode_mata_uang, nilai_barang_fog, nilai_barang_rp
+		) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 	`
 
 	var (
@@ -139,7 +137,7 @@ func (r *masterRepo) CreateContractProduct(ctx context.Context, req *entity.Crea
 		resp = new(entity.CreateContractProductResp)
 	)
 
-	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), Id, req.NoKontrak, req.KodeBarang, req.Jumlah, req.Satuan, req.HargaSatuan, req.KodeMataUang, req.NilaiBarangFog, req.NilaiBarangRp); err != nil {
+	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), Id, req.NoKontrak, req.KodeBarang, req.Jumlah, req.HargaSatuan, req.KodeMataUang, req.NilaiBarangFog, req.NilaiBarangRp); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::CreateContractProduct - failed to insert")
 		return nil, err
 	}
@@ -154,8 +152,7 @@ func (r *masterRepo) UpdateContractProduct(ctx context.Context, req *entity.Upda
 		SET
 			no_kontrak = ?,
 			kode_barang = ?,
-			jumlah = ?,
-			satuan = ?,
+			jumlah = ?, 
 			harga_satuan = ?,
 			kode_mata_uang = ?,
 			nilai_barang_fog = ?,
@@ -166,7 +163,7 @@ func (r *masterRepo) UpdateContractProduct(ctx context.Context, req *entity.Upda
 			AND deleted_at IS NULL
 	`
 
-	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), req.NoKontrak, req.KodeBarang, req.Jumlah, req.Satuan, req.HargaSatuan, req.KodeMataUang, req.NilaiBarangFog, req.NilaiBarangRp, req.Id); err != nil {
+	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), req.NoKontrak, req.KodeBarang, req.Jumlah, req.HargaSatuan, req.KodeMataUang, req.NilaiBarangFog, req.NilaiBarangRp, req.Id); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::UpdateContractProduct - failed to update")
 		return err
 	}

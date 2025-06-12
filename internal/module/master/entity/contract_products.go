@@ -21,7 +21,6 @@ type ContractProduct struct {
 	Stok           int    `json:"stok" db:"stok"`
 	NamaBarang     string `json:"nama_barang" db:"nama_barang"`
 	Jumlah         int    `json:"jumlah" db:"jumlah"`
-	Satuan         string `json:"satuan" db:"satuan"`
 	HargaSatuan    int    `json:"harga_satuan" db:"harga_satuan"`
 	KodeMataUang   string `json:"kode_mata_uang" db:"kode_mata_uang"`
 	NilaiBarangFog int    `json:"nilai_barang_fog" db:"nilai_barang_fog"`
@@ -45,7 +44,6 @@ type CreateContractProductReq struct {
 	NoKontrak      string `json:"no_kontrak" validate:"required"`
 	KodeBarang     string `json:"kode_barang" validate:"required"`
 	Jumlah         int    `json:"jumlah" validate:"min=0"`
-	Satuan         string `json:"satuan" validate:"required"`
 	HargaSatuan    int    `json:"harga_satuan" validate:"min=0"`
 	KodeMataUang   string `json:"kode_mata_uang" validate:"required"`
 	NilaiBarangFog int    `json:"nilai_barang_fog" validate:"min=0"`
@@ -61,7 +59,6 @@ type UpdateContractProductReq struct {
 	NoKontrak      string `json:"no_kontrak" validate:"required"`
 	KodeBarang     string `json:"kode_barang" validate:"required"`
 	Jumlah         int    `json:"jumlah" validate:"min=0"`
-	Satuan         string `json:"satuan" validate:"required"`
 	HargaSatuan    int    `json:"harga_satuan" validate:"min=0"`
 	KodeMataUang   string `json:"kode_mata_uang" validate:"required"`
 	NilaiBarangFog int    `json:"nilai_barang_fog" validate:"min=0"`

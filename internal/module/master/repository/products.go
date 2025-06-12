@@ -25,7 +25,9 @@ func (r *masterRepo) GetProducts(ctx context.Context, req *entity.GetProductsReq
 				id,
 				kode,
 				nama,
+				satuan,
 				kategori,
+				saldo_awal,
 				jumlah
 			FROM products
 			WHERE deleted_at IS NULL`
@@ -80,12 +82,12 @@ func (r *masterRepo) GetProduct(ctx context.Context, req *entity.GetProductReq) 
 
 func (r *masterRepo) CreateProduct(ctx context.Context, req *entity.CreateProductReq) (*entity.CreateProductResp, error) {
 	query := `
-		INSERT INTO products (id, kode, nama, kategori, jumlah)
-		VALUES (?, ?, ?, ?, ?)`
+		INSERT INTO products (id, kode, nama, satuan, kategori, saldo_awal, jumlah)
+		VALUES (?, ?, ?, ?, ?, ?, ?)`
 
 	Id := ulid.Make().String()
 
-	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), Id, req.Kode, req.Nama, req.Kategori, req.Jumlah); err != nil {
+	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), Id, req.Kode, req.Nama, req.Satuan, req.Kategori, req.SaldoAwal, req.SaldoAwal); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::CreateProduct - failed to create product")
 		return nil, err
 	}
@@ -96,10 +98,10 @@ func (r *masterRepo) CreateProduct(ctx context.Context, req *entity.CreateProduc
 func (r *masterRepo) UpdateProduct(ctx context.Context, req *entity.UpdateProductReq) error {
 	query := `
 		UPDATE products
-		SET kode = ?, nama = ?, kategori = ?, jumlah = ?, updated_at = NOW()
+		SET kode = ?, nama = ?, kategori = ?, saldo_awal= ? , jumlah = ?, updated_at = NOW()
 		WHERE id = ? AND deleted_at IS NULL`
 
-	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), req.Kode, req.Nama, req.Kategori, req.Jumlah, req.Id); err != nil {
+	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), req.Kode, req.Nama, req.Kategori, req.SaldoAwal, req.Jumlah, req.Id); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::UpdateProduct - failed to update product")
 		return err
 	}

@@ -2,7 +2,7 @@
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS income_inventories_products (
     id CHAR(26) PRIMARY KEY,
-    id_inventories CHAR(26) NOT NULL,
+    no_kontrak CHAR(26) NOT NULL,
     kode_barang CHAR(26) NOT NULL,
     stok_awal INTEGER NOT NULL DEFAULT 0,
     jumlah INTEGER NOT NULL DEFAULT 0,
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS income_inventories_products (
     deleted_at TIMESTAMP WITH TIME ZONE,
 
 
-    FOREIGN KEY (id_inventories) REFERENCES income_inventories (id),
+    FOREIGN KEY (no_kontrak) REFERENCES contracts (no_kontrak),
     FOREIGN KEY (kode_barang) REFERENCES products (kode)
 );
 -- +goose StatementEnd

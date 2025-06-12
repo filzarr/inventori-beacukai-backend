@@ -81,11 +81,6 @@ func (r *masterRepo) CreateTransactionIncome(ctx context.Context, req *entity.Cr
 		INSERT INTO transaction_incomes (id, no_kontrak, no_document)
 		VALUES (?, ?, ?)`
 
-	updateStockQuery := `
-		UPDATE products
-		SET jumlah = jumlah - ?
-		WHERE kode = ?`
-
 	id := ulid.Make().String()
 
 	tx, err := r.db.BeginTxx(ctx, nil)
@@ -98,12 +93,6 @@ func (r *masterRepo) CreateTransactionIncome(ctx context.Context, req *entity.Cr
 	// Insert ke transaction_incomes
 	if _, err := tx.ExecContext(ctx, tx.Rebind(query), id, req.NoKontrak, req.NoDocumentBc); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::CreateTransactionIncome - failed to insert")
-		return nil, err
-	}
-
-	// Update stok produk (kurangi jumlah)
-	if _, err := tx.ExecContext(ctx, tx.Rebind(updateStockQuery), req.Jumlah, req.KodeBarang); err != nil {
-		log.Error().Err(err).Any("req", req).Msg("repo::CreateTransactionIncome - failed to update product stock")
 		return nil, err
 	}
 
@@ -121,7 +110,7 @@ func (r *masterRepo) UpdateTransactionIncome(ctx context.Context, req *entity.Up
 		SET no_kontrak = ?, kode_barang = ?, jumlah = ?, updated_at = NOW()
 		WHERE id = ? AND deleted_at IS NULL`
 
-	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), req.NoKontrak, req.KodeBarang, req.Jumlah, req.Id); err != nil {
+	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), req.NoKontrak, req.Jumlah, req.Id); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::UpdateTransactionIncome - failed to update")
 		return err
 	}

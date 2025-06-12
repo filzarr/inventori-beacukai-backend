@@ -4,8 +4,7 @@ CREATE TABLE IF NOT EXISTS contract_products (
     id CHAR(26) PRIMARY KEY,
     no_kontrak CHAR(26) NOT NULL,
     kode_barang CHAR(26) NOT NULL, -- disamakan dengan products.kode
-    jumlah INTEGER NOT NULL DEFAULT 0,
-    satuan CHAR(50) NOT NULL,
+    jumlah INTEGER NOT NULL DEFAULT 0, 
     harga_satuan BIGINT NOT NULL DEFAULT 0,
     kode_mata_uang CHAR(50) NOT NULL,
     nilai_barang_fog BIGINT NOT NULL DEFAULT 0,

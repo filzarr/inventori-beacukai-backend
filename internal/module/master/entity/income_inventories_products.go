@@ -13,7 +13,6 @@ func (r *GetIncomeInventoryProductsReq) SetDefault() {
 
 type IncomeInventoryProduct struct {
 	Common
-	IdInventories string `json:"id_inventories" db:"id_inventories"`
 	KodeBarang    string `json:"kode_barang" db:"kode_barang"`
 	NamaBarang    string `json:"nama_barang" db:"nama_barang"`
 	NoKontrak     string `json:"no_kontrak" db:"no_kontrak"`
@@ -36,10 +35,10 @@ type GetIncomeInventoryProductResp struct {
 }
 
 type CreateIncomeInventoryProductReq struct {
-	IdInventories string `json:"id_inventories" validate:"required"`
-	KodeBarang    string `json:"kode_barang" validate:"required"`
-	SaldoAwal     int    `json:"saldo_awal" db:"saldo_awal"`
-	Jumlah        int    `json:"jumlah" validate:"min=0"`
+	NoKontrak  string `json:"no_kontrak" validate:"required"`
+	KodeBarang string `json:"kode_barang" validate:"required"`
+	SaldoAwal  int    `json:"saldo_awal" validate:"required"`
+	Jumlah     int    `json:"jumlah" validate:"min=0"`
 }
 
 type CreateIncomeInventoryProductResp struct {
@@ -47,11 +46,11 @@ type CreateIncomeInventoryProductResp struct {
 }
 
 type UpdateIncomeInventoryProductReq struct {
-	Id            string `params:"id" validate:"required"`
-	IdInventories string `json:"id_inventories" validate:"required"`
-	KodeBarang    string `json:"kode_barang" validate:"required"`
-	SaldoAwal     string `json:"saldo_awal" db:"saldo_awal"`
-	Jumlah        int    `json:"jumlah" validate:"min=0"`
+	Id         string `params:"id" validate:"required"`
+	NoKontrak  string `json:"no_kontrak" validate:"required"`
+	KodeBarang string `json:"kode_barang" validate:"required"`
+	SaldoAwal  string `json:"saldo_awal" db:"saldo_awal"`
+	Jumlah     int    `json:"jumlah" validate:"min=0"`
 }
 
 type DeleteIncomeInventoryProductReq struct {
