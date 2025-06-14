@@ -137,3 +137,29 @@ func (h *MasterHandler) deleteContract(c *fiber.Ctx) error {
 
 	return c.JSON(response.Success(nil, ""))
 }
+
+func (h *MasterHandler) updateContractDocument(c *fiber.Ctx) error {
+	var (
+		req = new(entity.UpdateContractDocumentReq)
+		v   = adapter.Adapters.Validator
+	)
+
+	if err := c.BodyParser(req); err != nil {
+		log.Warn().Err(err).Msg("handler::updateContractDocument - failed to parse request")
+		return c.Status(fiber.StatusBadRequest).JSON(response.Error(err))
+	}
+
+	if err := v.Validate(req); err != nil {
+		log.Warn().Err(err).Any("req", req).Msg("handler::updateContractDocument - invalid request")
+		code, errs := errmsg.Errors(err, req)
+		return c.Status(code).JSON(response.Error(errs))
+	}
+
+	err := h.service.UpdateContractDocument(c.Context(), req)
+	if err != nil {
+		code, errs := errmsg.Errors[error](err)
+		return c.Status(code).JSON(response.Error(errs))
+	}
+
+	return c.JSON(response.Success(nil, ""))
+}

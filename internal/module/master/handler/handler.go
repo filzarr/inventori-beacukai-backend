@@ -64,6 +64,7 @@ func (h *MasterHandler) Register(router fiber.Router) {
 	router.Get("/contracts", h.getContracts)
 	router.Get("/contracts/:id", h.getContract)
 	router.Post("/contracts", h.createContract)
+	router.Post("/contracts/document", h.updateContractDocument)
 	router.Put("/contracts/:id", h.updateContract)
 	router.Delete("/contracts/:id", h.deleteContract)
 

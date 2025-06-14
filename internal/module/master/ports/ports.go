@@ -43,6 +43,7 @@ type MasterRepository interface {
 	CreateContract(ctx context.Context, req *entity.CreateContractReq) (*entity.CreateContractResp, error)
 	UpdateContract(ctx context.Context, req *entity.UpdateContractReq) error
 	DeleteContract(ctx context.Context, req *entity.DeleteContractReq) error
+	UpdateContractDocument(ctx context.Context, req *entity.UpdateContractDocumentReq) error
 
 	// SaldoAwal
 	GetSaldoAwals(ctx context.Context, req *entity.GetSaldoAwalsReq) (*entity.GetSaldoAwalsResp, error)
@@ -135,6 +136,7 @@ type MasterService interface {
 	CreateContract(ctx context.Context, req *entity.CreateContractReq) (*entity.CreateContractResp, error)
 	UpdateContract(ctx context.Context, req *entity.UpdateContractReq) error
 	DeleteContract(ctx context.Context, req *entity.DeleteContractReq) error
+	UpdateContractDocument(ctx context.Context, req *entity.UpdateContractDocumentReq) error
 
 	// SaldoAwal
 	GetSaldoAwals(ctx context.Context, req *entity.GetSaldoAwalsReq) (*entity.GetSaldoAwalsResp, error)

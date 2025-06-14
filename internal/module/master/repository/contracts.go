@@ -22,12 +22,15 @@ func (r *masterRepo) GetContracts(ctx context.Context, req *entity.GetContractsR
 		args  = make([]any, 0, 3)
 		query = `
 			SELECT COUNT(*) OVER() AS total_data,
-			       c.id, c.kategori, c.no_kontrak, s.name AS nama_pemasok, s.alamat AS alamat_pemasok, c.tanggal
+			       c.id, c.kategori, c.no_kontrak, c.no_document, s.name AS nama_pemasok, s.alamat AS alamat_pemasok, c.tanggal
 			FROM contracts c
 			JOIN supliers s ON c.supliers_id = s.id
 			WHERE c.deleted_at IS NULL`
 	)
+	if req.Document {
+		query += ` AND c.no_document IS NOT NULL`
 
+	}
 	if req.Q != "" {
 		query += ` AND c.no_kontrak ILIKE '%' || ? || '%'`
 		args = append(args, req.Q)
@@ -103,6 +106,17 @@ func (r *masterRepo) DeleteContract(ctx context.Context, req *entity.DeleteContr
 
 	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), req.Id); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::DeleteContract - failed to delete contract")
+		return err
+	}
+
+	return nil
+}
+
+func (r *masterRepo) UpdateContractDocument(ctx context.Context, req *entity.UpdateContractDocumentReq) error {
+	query := `UPDATE contracts SET no_document = ?, updated_at = NOW() WHERE no_kontrak = ? AND deleted_at IS NULL`
+
+	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), req.NoDocumentBc, req.NoKontrak); err != nil {
+		log.Error().Err(err).Any("req", req).Msg("repo::UpdateDocumentContract - failed to update contract")
 		return err
 	}
 

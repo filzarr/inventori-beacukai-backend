@@ -12,6 +12,7 @@ END$$;
 CREATE TABLE IF NOT EXISTS contracts (
     id CHAR(26) PRIMARY KEY, 
     no_kontrak CHAR(26) NOT NULL,
+    no_document CHAR(50), 
     supliers_id CHAR(26) NOT NULL,
     kategori kategori_barang NOT NULL,
     tanggal TIMESTAMP WITH TIME ZONE NOT NULL,
@@ -20,6 +21,7 @@ CREATE TABLE IF NOT EXISTS contracts (
     deleted_at TIMESTAMP WITH TIME ZONE,
 
     CONSTRAINT no_kontrak_unique UNIQUE (no_kontrak),
+    FOREIGN KEY (no_document) REFERENCES bc_documents (no_document),
     FOREIGN KEY (supliers_id) REFERENCES supliers (id)
 );
 

@@ -24,3 +24,7 @@ func (s *masterService) UpdateContract(ctx context.Context, req *entity.UpdateCo
 func (s *masterService) DeleteContract(ctx context.Context, req *entity.DeleteContractReq) error {
 	return s.repo.DeleteContract(ctx, req)
 }
+
+func (s *masterService) UpdateContractDocument(ctx context.Context, req *entity.UpdateContractDocumentReq) error {
+	return s.repo.UpdateContractDocument(ctx, req)
+}

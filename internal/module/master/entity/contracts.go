@@ -3,7 +3,8 @@ package entity
 import "inventori-beacukai-backend/pkg/types"
 
 type GetContractsReq struct {
-	Q string `query:"q" validate:"omitempty,min=3"`
+	Q        string `query:"q" validate:"omitempty,min=3"`
+	Document bool   `query:"document"`
 	types.MetaQuery
 }
 
@@ -54,4 +55,9 @@ type UpdateContractReq struct {
 
 type DeleteContractReq struct {
 	Id string `json:"id" validate:"required"`
+}
+
+type UpdateContractDocumentReq struct {
+	NoKontrak    string `json:"no_kontrak" validate:"required"`
+	NoDocumentBc string `json:"no_document" validate:"required"`
 }
