@@ -163,3 +163,31 @@ func (h *MasterHandler) updateContractDocument(c *fiber.Ctx) error {
 
 	return c.JSON(response.Success(nil, ""))
 }
+
+func (h *MasterHandler) getTransactions(c *fiber.Ctx) error {
+	var (
+		req = new(entity.GetTransactionsReq)
+		v   = adapter.Adapters.Validator
+	)
+
+	if err := c.QueryParser(req); err != nil {
+		log.Warn().Err(err).Msg("handler::getContracts - failed to parse request")
+		return c.Status(fiber.StatusBadRequest).JSON(response.Error(err))
+	}
+
+	req.SetDefault()
+
+	if err := v.Validate(req); err != nil {
+		log.Warn().Err(err).Any("req", req).Msg("handler::getTransaction - invalid request")
+		code, errs := errmsg.Errors(err, req)
+		return c.Status(code).JSON(response.Error(errs))
+	}
+	log.Debug().Msg("dasf")
+	resp, err := h.service.GetTransactions(c.Context(), req)
+	if err != nil {
+		code, errs := errmsg.Errors[error](err)
+		return c.Status(code).JSON(response.Error(errs))
+	}
+
+	return c.JSON(response.Success(resp, ""))
+}

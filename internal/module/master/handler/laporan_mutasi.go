@@ -41,3 +41,35 @@ func (h *MasterHandler) getLaporanMutasi(c *fiber.Ctx) error {
 	// Return success
 	return c.JSON(response.Success(resp, ""))
 }
+
+func (h *MasterHandler) getLaporanMutasiPemasukan(c *fiber.Ctx) error {
+	var (
+		req = new(entity.GetLaporanMutasiPemasukanReq)
+		v   = adapter.Adapters.Validator
+	)
+
+	// Parse query params
+	if err := c.QueryParser(req); err != nil {
+		log.Warn().Err(err).Msg("handler::getLaporanMutasiPemasukan - failed to parse request")
+		return c.Status(fiber.StatusBadRequest).JSON(response.Error(err))
+	}
+
+	req.SetDefault()
+
+	// Validasi request
+	if err := v.Validate(req); err != nil {
+		log.Warn().Err(err).Any("req", req).Msg("handler::getLaporanMutasiPemasukan - invalid request")
+		code, errs := errmsg.Errors(err, req)
+		return c.Status(code).JSON(response.Error(errs))
+	}
+
+	// Call service
+	resp, err := h.service.GetLaporanMutasiPemasukan(c.Context(), req)
+	if err != nil {
+		code, errs := errmsg.Errors[error](err)
+		return c.Status(code).JSON(response.Error(errs))
+	}
+
+	// Return success
+	return c.JSON(response.Success(resp, ""))
+}

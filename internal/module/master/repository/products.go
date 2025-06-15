@@ -30,11 +30,15 @@ func (r *masterRepo) GetProducts(ctx context.Context, req *entity.GetProductsReq
 				saldo_awal,
 				jumlah
 			FROM products
-			WHERE deleted_at IS NULL`
+			WHERE deleted_at IS NULL AND kategori != 'Barang Jadi'`
 	)
 
 	resp.Items = make([]entity.Product, 0)
 
+	if req.Kategori != "" {
+		query += ` AND kategori = ?`
+		args = append(args, req.Kategori)
+	}
 	if req.Q != "" {
 		query += ` AND (
 			nama ILIKE '%' || ? || '%'

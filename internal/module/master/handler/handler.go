@@ -67,6 +67,7 @@ func (h *MasterHandler) Register(router fiber.Router) {
 	router.Post("/contracts/document", h.updateContractDocument)
 	router.Put("/contracts/:id", h.updateContract)
 	router.Delete("/contracts/:id", h.deleteContract)
+	router.Get("/contracts-transactions", h.getTransactions)
 
 	// contract_products
 	router.Get("/contract-products", h.getContractProducts)
@@ -89,6 +90,13 @@ func (h *MasterHandler) Register(router fiber.Router) {
 	router.Put("/income-inventories-products/:id", h.updateIncomeInventoriesProduct)
 	router.Delete("/income-inventories-products/:id", h.deleteIncomeInventoriesProduct)
 
+	// income_inventories_products
+	router.Get("/outcomes-inventories-products", h.getOutcomesInventoriesProducts)
+	router.Get("/outcomes-inventories-products/:id", h.getOutcomesInventoriesProduct)
+	router.Post("/outcomes-inventories-products", h.createOutcomesInventoriesProduct)
+	router.Put("/outcomes-inventories-products/:id", h.updateOutcomesInventoriesProduct)
+	router.Delete("/outcomes-inventories-products/:id", h.deleteOutcomesInventoriesProduct)
+
 	// transaction_incomes
 	router.Get("/transaction-incomes", h.getTransactionIncomes)
 	router.Get("/transaction-incomes/:id", h.getTransactionIncome)
@@ -110,6 +118,14 @@ func (h *MasterHandler) Register(router fiber.Router) {
 	router.Put("/buyers/:id", h.updateBuyer)
 	router.Delete("/buyers/:id", h.deleteBuyer)
 
+	// transfers_products
+	router.Get("/transfers-products", h.getTransfersProducts)
+	router.Get("/transfers-products/:id", h.getTransferProduct)
+	router.Post("/transfers-products", h.createTransferProduct)
+	router.Put("/transfers-products/:id", h.updateTransferProduct)
+	router.Delete("/transfers-products/:id", h.deleteTransferProduct)
+
 	// laporan
 	router.Get("/laporan-mutasi", h.getLaporanMutasi)
+	router.Get("/laporan-mutasi/pemasukan", h.getLaporanMutasiPemasukan)
 }

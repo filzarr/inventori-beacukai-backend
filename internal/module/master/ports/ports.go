@@ -44,6 +44,7 @@ type MasterRepository interface {
 	UpdateContract(ctx context.Context, req *entity.UpdateContractReq) error
 	DeleteContract(ctx context.Context, req *entity.DeleteContractReq) error
 	UpdateContractDocument(ctx context.Context, req *entity.UpdateContractDocumentReq) error
+	GetTransactions(ctx context.Context, req *entity.GetTransactionsReq) (*entity.GetTransactionsResp, error)
 
 	// SaldoAwal
 	GetSaldoAwals(ctx context.Context, req *entity.GetSaldoAwalsReq) (*entity.GetSaldoAwalsResp, error)
@@ -73,6 +74,13 @@ type MasterRepository interface {
 	UpdateIncomeInventoryProduct(ctx context.Context, req *entity.UpdateIncomeInventoryProductReq) error
 	DeleteIncomeInventoryProduct(ctx context.Context, req *entity.DeleteIncomeInventoryProductReq) error
 
+	// OutcomeInventoriesProducts
+	GetOutcomesInventoriesProducts(ctx context.Context, req *entity.GetOutcomesInventoriesProductsReq) (*entity.GetOutcomesInventoriesProductsResp, error)
+	GetOutcomesInventoriesProduct(ctx context.Context, req *entity.GetOutcomesInventoriesProductReq) (*entity.GetOutcomesInventoriesProductResp, error)
+	CreateOutcomesInventoriesProduct(ctx context.Context, req *entity.CreateOutcomesInventoriesProductReq) (*entity.CreateOutcomesInventoriesProductResp, error)
+	UpdateOutcomesInventoriesProduct(ctx context.Context, req *entity.UpdateOutcomesInventoriesProductReq) error
+	DeleteOutcomesInventoriesProduct(ctx context.Context, req *entity.DeleteOutcomesInventoriesProductReq) error
+
 	// TransactionIncomes
 	GetTransactionIncomes(ctx context.Context, req *entity.GetTransactionIncomesReq) (*entity.GetTransactionIncomesResp, error)
 	GetTransactionIncome(ctx context.Context, req *entity.GetTransactionIncomeReq) (*entity.GetTransactionIncomeResp, error)
@@ -94,8 +102,16 @@ type MasterRepository interface {
 	UpdateBuyer(ctx context.Context, req *entity.UpdateBuyerReq) error
 	DeleteBuyer(ctx context.Context, req *entity.DeleteBuyerReq) error
 
+	// TransfersProducts
+	GetTransfersProducts(ctx context.Context, req *entity.GetTransfersProductsReq) (*entity.GetTransfersProductsResp, error)
+	GetTransferProduct(ctx context.Context, req *entity.GetTransferProductReq) (*entity.GetTransferProductResp, error)
+	CreateTransferProduct(ctx context.Context, req *entity.CreateTransferProductReq) (*entity.CreateTransferProductResp, error)
+	UpdateTransferProduct(ctx context.Context, req *entity.UpdateTransferProductReq) error
+	DeleteTransferProduct(ctx context.Context, req *entity.DeleteTransferProductReq) error
+
 	// Laporan
 	GetLaporanMutasi(ctx context.Context, req *entity.GetLaporanMutasiReq) (*entity.GetLaporanMutasiResp, error)
+	GetLaporanMutasiPemasukan(ctx context.Context, req *entity.GetLaporanMutasiPemasukanReq) (*entity.GetLaporanMutasiPemasukanResp, error)
 }
 
 type MasterService interface {
@@ -137,6 +153,7 @@ type MasterService interface {
 	UpdateContract(ctx context.Context, req *entity.UpdateContractReq) error
 	DeleteContract(ctx context.Context, req *entity.DeleteContractReq) error
 	UpdateContractDocument(ctx context.Context, req *entity.UpdateContractDocumentReq) error
+	GetTransactions(ctx context.Context, req *entity.GetTransactionsReq) (*entity.GetTransactionsResp, error)
 
 	// SaldoAwal
 	GetSaldoAwals(ctx context.Context, req *entity.GetSaldoAwalsReq) (*entity.GetSaldoAwalsResp, error)
@@ -158,6 +175,13 @@ type MasterService interface {
 	CreateIncomeInventory(ctx context.Context, req *entity.CreateIncomeInventoryReq) (*entity.CreateIncomeInventoryResp, error)
 	UpdateIncomeInventory(ctx context.Context, req *entity.UpdateIncomeInventoryReq) error
 	DeleteIncomeInventory(ctx context.Context, req *entity.DeleteIncomeInventoryReq) error
+
+	// OutcomeInventoriesProducts
+	GetOutcomesInventoriesProducts(ctx context.Context, req *entity.GetOutcomesInventoriesProductsReq) (*entity.GetOutcomesInventoriesProductsResp, error)
+	GetOutcomesInventoriesProduct(ctx context.Context, req *entity.GetOutcomesInventoriesProductReq) (*entity.GetOutcomesInventoriesProductResp, error)
+	CreateOutcomesInventoriesProduct(ctx context.Context, req *entity.CreateOutcomesInventoriesProductReq) (*entity.CreateOutcomesInventoriesProductResp, error)
+	UpdateOutcomesInventoriesProduct(ctx context.Context, req *entity.UpdateOutcomesInventoriesProductReq) error
+	DeleteOutcomesInventoriesProduct(ctx context.Context, req *entity.DeleteOutcomesInventoriesProductReq) error
 
 	// IncomeInventoryProducts
 	GetIncomeInventoryProducts(ctx context.Context, req *entity.GetIncomeInventoryProductsReq) (*entity.GetIncomeInventoryProductsResp, error)
@@ -187,6 +211,14 @@ type MasterService interface {
 	UpdateBuyer(ctx context.Context, req *entity.UpdateBuyerReq) error
 	DeleteBuyer(ctx context.Context, req *entity.DeleteBuyerReq) error
 
+	// TransfersProducts
+	GetTransfersProducts(ctx context.Context, req *entity.GetTransfersProductsReq) (*entity.GetTransfersProductsResp, error)
+	GetTransferProduct(ctx context.Context, req *entity.GetTransferProductReq) (*entity.GetTransferProductResp, error)
+	CreateTransferProduct(ctx context.Context, req *entity.CreateTransferProductReq) (*entity.CreateTransferProductResp, error)
+	UpdateTransferProduct(ctx context.Context, req *entity.UpdateTransferProductReq) error
+	DeleteTransferProduct(ctx context.Context, req *entity.DeleteTransferProductReq) error
+
 	// Laporan
 	GetLaporanMutasi(ctx context.Context, req *entity.GetLaporanMutasiReq) (*entity.GetLaporanMutasiResp, error)
+	GetLaporanMutasiPemasukan(ctx context.Context, req *entity.GetLaporanMutasiPemasukanReq) (*entity.GetLaporanMutasiPemasukanResp, error)
 }

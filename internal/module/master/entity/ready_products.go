@@ -15,6 +15,7 @@ type ReadyProduct struct {
 	Common
 	Kode   string `json:"kode" db:"kode"`
 	Nama   string `json:"nama" db:"nama"`
+	Satuan string `json:"satuan" db:"satuan"`
 	Jumlah int    `json:"jumlah" db:"jumlah"`
 }
 
@@ -34,6 +35,7 @@ type GetReadyProductResp struct {
 type CreateReadyProductReq struct {
 	Kode   string `json:"kode" validate:"required,min=3"`
 	Nama   string `json:"nama" validate:"required,min=3"`
+	Satuan string `json:"satuan" validate:"required,min=3"`
 	Jumlah int    `json:"jumlah" validate:"min=0"`
 }
 
@@ -45,6 +47,7 @@ type UpdateReadyProductReq struct {
 	Id     string `params:"id" validate:"required"`
 	Kode   string `json:"kode" validate:"required,min=3"`
 	Nama   string `json:"nama" validate:"required,min=3"`
+	Satuan string `json:"satuan" validate:"required,min=3"`
 	Jumlah int    `json:"jumlah" validate:"min=0"`
 }
 

@@ -3,7 +3,8 @@ package entity
 import "inventori-beacukai-backend/pkg/types"
 
 type GetProductsReq struct {
-	Q string `query:"q" validate:"omitempty,min=3"`
+	Q        string `query:"q" validate:"omitempty,min=3"`
+	Kategori string `query:"kategori"`
 	types.MetaQuery
 }
 

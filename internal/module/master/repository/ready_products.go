@@ -25,9 +25,10 @@ func (r *masterRepo) GetReadyProducts(ctx context.Context, req *entity.GetReadyP
 				id,
 				kode,
 				nama,
+				satuan,
 				jumlah
-			FROM ready_products
-			WHERE deleted_at IS NULL`
+			FROM products
+			WHERE deleted_at IS NULL AND kategori = 'Barang Jadi'`
 	)
 
 	resp.Items = make([]entity.ReadyProduct, 0)
@@ -61,9 +62,9 @@ func (r *masterRepo) GetReadyProduct(ctx context.Context, req *entity.GetReadyPr
 	var data = new(entity.ReadyProduct)
 
 	query := `
-		SELECT id, kode, nama, jumlah
-		FROM ready_products
-		WHERE id = ? AND deleted_at IS NULL`
+		SELECT id, kode, nama,satuan, jumlah
+		FROM products
+		WHERE id = ? AND deleted_at IS NULL AND kategori = Barang Jadi`
 
 	if err := r.db.GetContext(ctx, data, r.db.Rebind(query), req.Id); err != nil {
 		if err == sql.ErrNoRows {
@@ -79,12 +80,12 @@ func (r *masterRepo) GetReadyProduct(ctx context.Context, req *entity.GetReadyPr
 
 func (r *masterRepo) CreateReadyProduct(ctx context.Context, req *entity.CreateReadyProductReq) (*entity.CreateReadyProductResp, error) {
 	query := `
-		INSERT INTO ready_products (id, kode, nama, jumlah)
-		VALUES (?, ?, ?, ?)`
+		INSERT INTO products (id, kode, satuan, nama, jumlah, kategori)
+		VALUES (?, ?, ?, ?, ?, ?)`
 
 	Id := ulid.Make().String()
 
-	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), Id, req.Kode, req.Nama, req.Jumlah); err != nil {
+	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), Id, req.Kode, req.Satuan, req.Nama, req.Jumlah, "Barang Jadi"); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::CreateReadyProduct - failed to create ready_product")
 		return nil, err
 	}
@@ -94,7 +95,7 @@ func (r *masterRepo) CreateReadyProduct(ctx context.Context, req *entity.CreateR
 
 func (r *masterRepo) UpdateReadyProduct(ctx context.Context, req *entity.UpdateReadyProductReq) error {
 	query := `
-		UPDATE ready_products
+		UPDATE products
 		SET kode = ?, nama = ?, jumlah = ?, updated_at = NOW()
 		WHERE id = ? AND deleted_at IS NULL`
 
