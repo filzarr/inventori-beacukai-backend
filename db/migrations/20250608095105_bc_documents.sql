@@ -5,7 +5,7 @@
 DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'kategori_bc') THEN
-        CREATE TYPE kategori_bc AS ENUM ('BC 23', 'BC 27 In', 'BC 262', 'BC 40', 'BC 25', 'BC 27 out', 'BC 261', 'BC 41', 'BC 30');
+        CREATE TYPE kategori_bc AS ENUM ('2.3', '2.5', '2.7', '2.61', '2.62', '40', '41', '30', 'PPFT2');
     END IF;
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'kategori_document') THEN
         CREATE TYPE kategori_document AS ENUM ('Penjualan', 'Pembelian');

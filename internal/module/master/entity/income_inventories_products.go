@@ -17,6 +17,7 @@ type IncomeInventoryProduct struct {
 	NamaBarang    string `json:"nama_barang" db:"nama_barang"`
 	NoKontrak     string `json:"no_kontrak" db:"no_kontrak"`
 	SaldoAwal     string `json:"saldo_awal" db:"saldo_awal"`
+	Tanggal       string `json:"tanggal" db:"tanggal"`
 	JumlahKontrak int    `json:"jumlah_kontrak" db:"jumlah_kontrak"`
 	Jumlah        int    `json:"jumlah_masuk" db:"jumlah_masuk"`
 }
@@ -39,6 +40,7 @@ type CreateIncomeInventoryProductReq struct {
 	KodeBarang string `json:"kode_barang" validate:"required"`
 	SaldoAwal  int    `json:"saldo_awal" validate:"required"`
 	Jumlah     int    `json:"jumlah" validate:"min=0"`
+	Tanggal    string `json:"tanggal" validate:"required,datetime=2006-01-02T15:04:05Z07:00"`
 }
 
 type CreateIncomeInventoryProductResp struct {
@@ -51,6 +53,7 @@ type UpdateIncomeInventoryProductReq struct {
 	KodeBarang string `json:"kode_barang" validate:"required"`
 	SaldoAwal  string `json:"saldo_awal" db:"saldo_awal"`
 	Jumlah     int    `json:"jumlah" validate:"min=0"`
+	Tanggal    string `json:"tanggal" validate:"required,datetime=2006-01-02T15:04:05Z07:00"`
 }
 
 type DeleteIncomeInventoryProductReq struct {

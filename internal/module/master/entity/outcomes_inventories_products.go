@@ -17,6 +17,7 @@ type OutcomesInventoriesProduct struct {
 	NamaBarang    string `json:"nama_barang" db:"nama_barang"`
 	NoKontrak     string `json:"no_kontrak" db:"no_kontrak"`
 	SaldoAwal     string `json:"saldo_awal" db:"saldo_awal"`
+	Tanggal       string `json:"tanggal" db:"tanggal"`
 	JumlahKontrak int    `json:"jumlah_kontrak" db:"jumlah_kontrak"`
 	Jumlah        int    `json:"jumlah_masuk" db:"jumlah_masuk"`
 }
@@ -39,6 +40,7 @@ type CreateOutcomesInventoriesProductReq struct {
 	KodeBarang string `json:"kode_barang" validate:"required"`
 	SaldoAwal  int    `json:"saldo_awal" validate:"required"`
 	Jumlah     int    `json:"jumlah" validate:"min=0"`
+	Tanggal    string `json:"tanggal" validate:"required,datetime=2006-01-02T15:04:05Z07:00"`
 }
 
 type CreateOutcomesInventoriesProductResp struct {
@@ -50,6 +52,7 @@ type UpdateOutcomesInventoriesProductReq struct {
 	NoKontrak  string `json:"no_kontrak" validate:"required"`
 	KodeBarang string `json:"kode_barang" validate:"required"`
 	SaldoAwal  string `json:"saldo_awal" db:"saldo_awal"`
+	Tanggal    string `json:"tanggal" validate:"required,datetime=2006-01-02T15:04:05Z07:00"`
 	Jumlah     int    `json:"jumlah" validate:"min=0"`
 }
 

@@ -33,8 +33,9 @@ func (r *masterRepo) GetOutcomesInventoriesProducts(ctx context.Context, req *en
 		p.nama AS nama_barang,
 		cp.jumlah AS jumlah_kontrak,
 		iip.no_kontrak AS no_kontrak,
-		iip.jumlah AS jumlah_masuk
-		FROM income_inventories_products iip
+		iip.jumlah AS jumlah_masuk,
+		iip.tanggal,
+		FROM outcomes_inventories_products iip
 		JOIN products p ON iip.kode_barang = p.kode
 		JOIN contract_products cp ON iip.no_kontrak = cp.no_kontrak
 		WHERE iip.deleted_at IS NULL 
@@ -107,8 +108,9 @@ func (r *masterRepo) CreateOutcomesInventoriesProduct(ctx context.Context, req *
 			no_kontrak,
 			kode_barang,
 			stok_awal,
-			jumlah
-		) VALUES (?, ?, ?, ?, ?)
+			jumlah,
+			tanggal
+		) VALUES (?, ?, ?, ?, ?, ?)
 	`
 
 	var (
@@ -124,7 +126,7 @@ func (r *masterRepo) CreateOutcomesInventoriesProduct(ctx context.Context, req *
 	defer tx.Rollback()
 
 	// Insert ke income_inventories_products
-	if _, err := tx.ExecContext(ctx, tx.Rebind(query), Id, req.NoKontrak, req.KodeBarang, req.SaldoAwal, req.Jumlah); err != nil {
+	if _, err := tx.ExecContext(ctx, tx.Rebind(query), Id, req.NoKontrak, req.KodeBarang, req.SaldoAwal, req.Jumlah, req.Tanggal); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::CreateOutcomesInventoriesProduct - failed to insert")
 		return nil, err
 	}
@@ -157,13 +159,14 @@ func (r *masterRepo) UpdateOutcomesInventoriesProduct(ctx context.Context, req *
 			no_kontrak = ?,
 			kode_barang = ?,
 			jumlah = ?,
+			tanggal = ?,
 			updated_at = NOW()
 		WHERE
 			id = ?
 			AND deleted_at IS NULL
 	`
 
-	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), req.NoKontrak, req.KodeBarang, req.Jumlah, req.Id); err != nil {
+	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), req.NoKontrak, req.KodeBarang, req.Jumlah, req.Tanggal, req.Id); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::UpdateOutcomesInventoriesProduct - failed to update")
 		return err
 	}
