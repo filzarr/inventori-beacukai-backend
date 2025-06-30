@@ -77,11 +77,11 @@ func (r *masterRepo) GetContract(ctx context.Context, req *entity.GetContractReq
 }
 
 func (r *masterRepo) CreateContract(ctx context.Context, req *entity.CreateContractReq) (*entity.CreateContractResp, error) {
-	query := `INSERT INTO contracts (id, no_kontrak,kategori_kontrak, supliers_id, kategori, tanggal) VALUES (?, ?, ?, ?, ?)`
+	query := `INSERT INTO contracts (id, no_kontrak, kategori_kontrak, supliers_id, tanggal) VALUES (?, ?, ?, ?, ?)`
 	var resp = new(entity.CreateContractResp)
 	id := ulid.Make().String()
 
-	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), id, req.NoKontrak, req.Kategori, req.SupliersId, req.Kategori, req.Tanggal); err != nil {
+	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), id, req.NoKontrak, req.Kategori, req.SupliersId, req.Tanggal); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::CreateContract - failed to create contract")
 		return nil, err
 	}

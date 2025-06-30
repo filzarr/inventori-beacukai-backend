@@ -32,7 +32,7 @@ type GetBcDocumentResp struct {
 }
 
 type CreateBcDocumentReq struct {
-	Kategori   string `json:"kategori" validate:"required,oneof='BC 23' 'BC 27 In' 'BC 262' 'BC 40'"`
+	Kategori   string `json:"kategori" validate:"required,oneof='2.3' '2.5' '2.7' '2.61' '2.62' '40' '41' '30' 'PPFT2'"`
 	NoDocument string `json:"no_document" validate:"required,min=3"`
 	Tanggal    string `json:"tanggal" validate:"required,datetime=2006-01-02T15:04:05Z07:00"`
 }
