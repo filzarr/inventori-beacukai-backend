@@ -3,7 +3,8 @@ package entity
 import "inventori-beacukai-backend/pkg/types"
 
 type GetLaporanMutasiReq struct {
-	Q string `query:"q" validate:"omitempty,min=3"`
+	Q        string `query:"q" validate:"omitempty,min=3"`
+	Kategori string `query:"kategori" validate:"omitempty"`
 	types.MetaQuery
 }
 
@@ -28,7 +29,7 @@ type GetLaporanMutasiResp struct {
 
 type GetLaporanMutasiPemasukanReq struct {
 	Q          string `query:"q" validate:"omitempty,min=3"`
-	KodeBarang string `query:"kode-barang"`
+	KodeBarang string `query:"kode_barang"`
 	types.MetaQuery
 }
 
@@ -39,7 +40,7 @@ func (r *GetLaporanMutasiPemasukanReq) SetDefault() {
 type LaporanMutasiPemasukan struct {
 	Id          string `json:"id" db:"id"`
 	KodeDokumen string `json:"kode_document" db:"kode_document"`
-	NoDokumen   string `json:"no_document" db:"no_document"`
+	Kategori    string `json:"kategori" db:"kategori"`
 	NoKontrak   string `json:"no_kontrak" db:"no_kontrak"`
 	Tanggal     string `json:"tanggal" db:"tanggal"`
 	Jumlah      int    `json:"jumlah" db:"jumlah"`

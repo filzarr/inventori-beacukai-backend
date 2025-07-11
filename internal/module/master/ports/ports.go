@@ -45,6 +45,7 @@ type MasterRepository interface {
 	DeleteContract(ctx context.Context, req *entity.DeleteContractReq) error
 	UpdateContractDocument(ctx context.Context, req *entity.UpdateContractDocumentReq) error
 	GetTransactions(ctx context.Context, req *entity.GetTransactionsReq) (*entity.GetTransactionsResp, error)
+	GetContractNotRequired(ctx context.Context, req *entity.GetContractNotRequiredReq) (*entity.GetContractNotRequiredResp, error)
 
 	// SaldoAwal
 	GetSaldoAwals(ctx context.Context, req *entity.GetSaldoAwalsReq) (*entity.GetSaldoAwalsResp, error)
@@ -112,6 +113,21 @@ type MasterRepository interface {
 	// Laporan
 	GetLaporanMutasi(ctx context.Context, req *entity.GetLaporanMutasiReq) (*entity.GetLaporanMutasiResp, error)
 	GetLaporanMutasiPemasukan(ctx context.Context, req *entity.GetLaporanMutasiPemasukanReq) (*entity.GetLaporanMutasiPemasukanResp, error)
+
+	// Productions
+	GetProductions(ctx context.Context, req *entity.GetProductionsReq) (*entity.GetProductionsResp, error)
+	GetProduction(ctx context.Context, req *entity.GetProductionReq) (*entity.GetProductionResp, error)
+	CreateProduction(ctx context.Context, req *entity.CreateProductionReq) (*entity.CreateProductionResp, error)
+	UpdateProduction(ctx context.Context, req *entity.UpdateProductionReq) error
+	DeleteProduction(ctx context.Context, req *entity.DeleteProductionReq) error
+
+	// ProductsMovement
+	GetProductsMovement(ctx context.Context, req *entity.GetProductsMovementReq) (*entity.GetProductsMovementResp, error)
+	GetProductsMovementByID(ctx context.Context, req *entity.GetProductsMovementReqID) (*entity.GetProductsMovementRespID, error)
+	CreateProductsMovement(ctx context.Context, req *entity.CreateProductsMovementReq) (*entity.CreateProductsMovementResp, error)
+	UpdateProductsMovement(ctx context.Context, req *entity.UpdateProductsMovementReq) error
+	UpdateStatusProductsMovement(ctx context.Context, req *entity.UpdateStatusProductsMoveMentReq) error
+	DeleteProductsMovement(ctx context.Context, req *entity.DeleteProductsMovementReq) error
 }
 
 type MasterService interface {
@@ -154,6 +170,7 @@ type MasterService interface {
 	DeleteContract(ctx context.Context, req *entity.DeleteContractReq) error
 	UpdateContractDocument(ctx context.Context, req *entity.UpdateContractDocumentReq) error
 	GetTransactions(ctx context.Context, req *entity.GetTransactionsReq) (*entity.GetTransactionsResp, error)
+	GetContractNotRequired(ctx context.Context, req *entity.GetContractNotRequiredReq) (*entity.GetContractNotRequiredResp, error)
 
 	// SaldoAwal
 	GetSaldoAwals(ctx context.Context, req *entity.GetSaldoAwalsReq) (*entity.GetSaldoAwalsResp, error)
@@ -221,4 +238,19 @@ type MasterService interface {
 	// Laporan
 	GetLaporanMutasi(ctx context.Context, req *entity.GetLaporanMutasiReq) (*entity.GetLaporanMutasiResp, error)
 	GetLaporanMutasiPemasukan(ctx context.Context, req *entity.GetLaporanMutasiPemasukanReq) (*entity.GetLaporanMutasiPemasukanResp, error)
+
+	// Productions
+	GetProductions(ctx context.Context, req *entity.GetProductionsReq) (*entity.GetProductionsResp, error)
+	GetProduction(ctx context.Context, req *entity.GetProductionReq) (*entity.GetProductionResp, error)
+	CreateProduction(ctx context.Context, req *entity.CreateProductionReq) (*entity.CreateProductionResp, error)
+	UpdateProduction(ctx context.Context, req *entity.UpdateProductionReq) error
+	DeleteProduction(ctx context.Context, req *entity.DeleteProductionReq) error
+
+	// ProductsMovement
+	GetProductsMovement(ctx context.Context, req *entity.GetProductsMovementReq) (*entity.GetProductsMovementResp, error)
+	GetProductsMovementByID(ctx context.Context, req *entity.GetProductsMovementReqID) (*entity.GetProductsMovementRespID, error)
+	CreateProductsMovement(ctx context.Context, req *entity.CreateProductsMovementReq) (*entity.CreateProductsMovementResp, error)
+	UpdateProductsMovement(ctx context.Context, req *entity.UpdateProductsMovementReq) error
+	UpdateStatusProductsMovement(ctx context.Context, req *entity.UpdateStatusProductsMoveMentReq) error
+	DeleteProductsMovement(ctx context.Context, req *entity.DeleteProductsMovementReq) error
 }

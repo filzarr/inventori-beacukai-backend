@@ -13,9 +13,8 @@ func (r *GetBcDocumentsReq) SetDefault() {
 
 type BcDocument struct {
 	Common
-	Kategori   string `json:"kategori" db:"kategori"`
-	NoDocument string `json:"no_document" db:"no_document"`
-	Tanggal    string `json:"tanggal" db:"tanggal"`
+	Kategori     string `json:"kategori" db:"kategori"`
+	KodeDocument string `json:"kode_document" db:"kode_document"`
 }
 
 type GetBcDocumentsResp struct {
@@ -32,9 +31,8 @@ type GetBcDocumentResp struct {
 }
 
 type CreateBcDocumentReq struct {
-	Kategori   string `json:"kategori" validate:"required,oneof='2.3' '2.5' '2.7' '2.61' '2.62' '40' '41' '30' 'PPFT2'"`
-	NoDocument string `json:"no_document" validate:"required,min=3"`
-	Tanggal    string `json:"tanggal" validate:"required,datetime=2006-01-02T15:04:05Z07:00"`
+	Kategori     string `json:"kategori" validate:"required"`
+	KodeDocument string `json:"kode_document" validate:"required,min=3"`
 }
 
 type CreateBcDocumentResp struct {
@@ -42,10 +40,9 @@ type CreateBcDocumentResp struct {
 }
 
 type UpdateBcDocumentReq struct {
-	Id         string `params:"id" validate:"required"`
-	Kategori   string `json:"kategori" validate:"required,oneof='BC 23' 'BC 27 In' 'BC 262' 'BC 40'"`
-	NoDocument string `json:"no_document" validate:"required,min=3"`
-	Tanggal    string `json:"tanggal" validate:"required,datetime=2006-01-02T15:04:05Z07:00"`
+	Id           string `params:"id" validate:"required"`
+	Kategori     string `json:"kategori" validate:"required"`
+	KodeDocument string `json:"kode_document" validate:"required,min=3"`
 }
 
 type DeleteBcDocumentReq struct {

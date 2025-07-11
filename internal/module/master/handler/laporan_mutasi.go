@@ -15,7 +15,6 @@ func (h *MasterHandler) getLaporanMutasi(c *fiber.Ctx) error {
 		req = new(entity.GetLaporanMutasiReq)
 		v   = adapter.Adapters.Validator
 	)
-
 	// Parse query params
 	if err := c.QueryParser(req); err != nil {
 		log.Warn().Err(err).Msg("handler::getLaporanMutasi - failed to parse request")
@@ -55,6 +54,7 @@ func (h *MasterHandler) getLaporanMutasiPemasukan(c *fiber.Ctx) error {
 	}
 
 	req.SetDefault()
+	log.Info().Msg(req.KodeBarang)
 
 	// Validasi request
 	if err := v.Validate(req); err != nil {

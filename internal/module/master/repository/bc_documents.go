@@ -22,7 +22,7 @@ func (r *masterRepo) GetBcDocuments(ctx context.Context, req *entity.GetBcDocume
 		data  = make([]dao, 0)
 		args  = make([]any, 0, 3)
 		query = `
-			SELECT COUNT(*) OVER() AS total_data, id, kategori, no_document, tanggal 
+			SELECT COUNT(*) OVER() AS total_data, id, kategori, kode_document 
 			FROM bc_documents
 			WHERE deleted_at IS NULL`
 	)
@@ -31,12 +31,12 @@ func (r *masterRepo) GetBcDocuments(ctx context.Context, req *entity.GetBcDocume
 
 	if req.Q != "" {
 		query += ` AND (
-			no_document ILIKE '%' || ? || '%'
+			kode_document ILIKE '%' || ? || '%'
 		)`
 		args = append(args, req.Q)
 	}
 
-	query += ` ORDER BY tanggal DESC LIMIT ? OFFSET ?`
+	query += ` LIMIT ? OFFSET ?`
 	args = append(args, req.Paginate, (req.Page-1)*req.Paginate)
 
 	if err := r.db.SelectContext(ctx, &data, r.db.Rebind(query), args...); err != nil {
@@ -59,7 +59,7 @@ func (r *masterRepo) GetBcDocument(ctx context.Context, req *entity.GetBcDocumen
 		data = new(entity.BcDocument)
 	)
 
-	query := `SELECT id, kategori, no_document, tanggal FROM bc_documents WHERE id = ? AND deleted_at IS NULL`
+	query := `SELECT id, kategori, kode_document, tanggal FROM bc_documents WHERE id = ? AND deleted_at IS NULL`
 
 	if err := r.db.GetContext(ctx, data, r.db.Rebind(query), req.Id); err != nil {
 		if err == sql.ErrNoRows {
@@ -75,14 +75,14 @@ func (r *masterRepo) GetBcDocument(ctx context.Context, req *entity.GetBcDocumen
 }
 
 func (r *masterRepo) CreateBcDocument(ctx context.Context, req *entity.CreateBcDocumentReq) (*entity.CreateBcDocumentResp, error) {
-	query := `INSERT INTO bc_documents (id, kategori, no_document, tanggal) VALUES (?, ?, ?, ?)`
+	query := `INSERT INTO bc_documents (id, kategori, kode_document) VALUES (?, ?, ?)`
 
 	var (
 		Id   = ulid.Make().String()
 		resp = new(entity.CreateBcDocumentResp)
 	)
 
-	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), Id, req.Kategori, req.NoDocument, req.Tanggal); err != nil {
+	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), Id, req.Kategori, req.KodeDocument); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::CreateBcDocument - failed to create")
 		return nil, err
 	}
@@ -94,10 +94,10 @@ func (r *masterRepo) CreateBcDocument(ctx context.Context, req *entity.CreateBcD
 func (r *masterRepo) UpdateBcDocument(ctx context.Context, req *entity.UpdateBcDocumentReq) error {
 	query := `
 		UPDATE bc_documents
-		SET kategori = ?, no_document = ?, tanggal = ?, updated_at = NOW()
+		SET kategori = ?, kode_document = ?, updated_at = NOW()
 		WHERE id = ? AND deleted_at IS NULL`
 
-	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), req.Kategori, req.NoDocument, req.Tanggal, req.Id); err != nil {
+	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), req.Kategori, req.KodeDocument, req.Id); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::UpdateBcDocument - failed to update")
 		return err
 	}

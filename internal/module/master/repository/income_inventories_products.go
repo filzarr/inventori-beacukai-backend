@@ -26,19 +26,28 @@ func (r *masterRepo) GetIncomeInventoryProducts(ctx context.Context, req *entity
 	resp.Items = make([]entity.IncomeInventoryProduct, 0)
 
 	query := `
-		SELECT DISTINCT ON (iip.id)
-		COUNT(*) OVER() AS total_data,
-		iip.id,
-		iip.kode_barang,
-		p.nama AS nama_barang,
-		cp.jumlah AS jumlah_kontrak,
-		iip.no_kontrak AS no_kontrak,
-		iip.tanggal,
-		iip.jumlah AS jumlah_masuk
-		FROM income_inventories_products iip
-		JOIN products p ON iip.kode_barang = p.kode
-		JOIN contract_products cp ON iip.no_kontrak = cp.no_kontrak
-		WHERE iip.deleted_at IS NULL 
+		WITH total_masuk AS (
+			SELECT
+				no_kontrak,
+				kode_barang,
+				SUM(jumlah) AS jumlah_masuk
+			FROM income_inventories_products
+			WHERE deleted_at IS NULL
+			GROUP BY no_kontrak, kode_barang
+		)
+		SELECT
+			COUNT(*) OVER() AS total_data,
+			cp.no_kontrak,
+			cp.kode_barang,
+			p.nama AS nama_barang,
+			COALESCE(tm.jumlah_masuk, 0) AS jumlah_masuk,
+			cp.jumlah AS jumlah_kontrak,
+			MIN(iip.id) AS id  -- ambil salah satu id untuk representasi
+		FROM contract_products cp
+		JOIN products p ON cp.kode_barang = p.kode
+		LEFT JOIN total_masuk tm ON tm.no_kontrak = cp.no_kontrak AND tm.kode_barang = cp.kode_barang
+		LEFT JOIN income_inventories_products iip ON iip.no_kontrak = cp.no_kontrak AND iip.kode_barang = cp.kode_barang AND iip.deleted_at IS NULL
+		WHERE cp.deleted_at IS NULL
 	`
 
 	if req.Q != "" {
@@ -47,6 +56,13 @@ func (r *masterRepo) GetIncomeInventoryProducts(ctx context.Context, req *entity
 		)`
 		args = append(args, req.Q)
 	}
+	if req.Full {
+		query += ` AND COALESCE(tm.jumlah_masuk, 0) < cp.jumlah`
+	}
+
+	query += `
+		GROUP BY cp.no_kontrak, cp.kode_barang, p.nama, cp.jumlah, tm.jumlah_masuk
+		ORDER BY cp.no_kontrak, cp.kode_barang`
 
 	query += ` LIMIT ? OFFSET ?`
 	args = append(args, req.Paginate, (req.Page-1)*req.Paginate)
@@ -78,6 +94,7 @@ func (r *masterRepo) GetIncomeInventoryProduct(ctx context.Context, req *entity.
 			id_inventories,
 			kode_barang,
 			jumlah,
+			lokasi,
 			created_at,
 			updated_at,
 			deleted_at
@@ -107,9 +124,9 @@ func (r *masterRepo) CreateIncomeInventoryProduct(ctx context.Context, req *enti
 			id,
 			no_kontrak,
 			kode_barang,
+			lokasi,
 			stok_awal,
-			jumlah,
-			tanggal
+			jumlah
 		) VALUES (?, ?, ?, ?, ?, ?)
 	`
 
@@ -126,7 +143,7 @@ func (r *masterRepo) CreateIncomeInventoryProduct(ctx context.Context, req *enti
 	defer tx.Rollback()
 
 	// Insert ke income_inventories_products
-	if _, err := tx.ExecContext(ctx, tx.Rebind(query), Id, req.NoKontrak, req.KodeBarang, req.SaldoAwal, req.Jumlah, req.Tanggal); err != nil {
+	if _, err := tx.ExecContext(ctx, tx.Rebind(query), Id, req.NoKontrak, req.KodeBarang, req.Lokasi, req.SaldoAwal, req.Jumlah); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::CreateIncomeInventoryProduct - failed to insert")
 		return nil, err
 	}
@@ -159,14 +176,13 @@ func (r *masterRepo) UpdateIncomeInventoryProduct(ctx context.Context, req *enti
 			no_kontrak = ?,
 			kode_barang = ?,
 			jumlah = ?,
-			tanggal = ?,
 			updated_at = NOW()
 		WHERE
 			id = ?
 			AND deleted_at IS NULL
 	`
 
-	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), req.NoKontrak, req.KodeBarang, req.Jumlah, req.Tanggal, req.Id); err != nil {
+	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), req.NoKontrak, req.KodeBarang, req.Jumlah, req.Id); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::UpdateIncomeInventoryProduct - failed to update")
 		return err
 	}

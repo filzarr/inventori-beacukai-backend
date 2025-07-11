@@ -16,12 +16,13 @@ func (r *GetContractsReq) SetDefault() {
 
 type Contract struct {
 	Common
-	Kategori      string  `json:"kategori" db:"kategori"`
-	NamaPemasok   string  `json:"nama_pemasok" db:"nama_pemasok"`
-	NoDocument    *string `json:"no_document" db:"no_document"`
-	AlamatPemasok string  `json:"alamat_pemasok" db:"alamat_pemasok"`
-	NoKontrak     string  `json:"no_kontrak" db:"no_kontrak"`
-	Tanggal       string  `json:"tanggal" db:"tanggal"`
+	Kategori          string  `json:"kategori" db:"kategori_kontrak"`
+	NamaPemasok       string  `json:"nama_pemasok" db:"nama_pemasok"`
+	KodeDocumentBC    *string `json:"kode_document_bc" db:"kode_document_bc"`
+	TanggalDocumentBc *string `json:"tanggal_document_bc" db:"tanggal_document_bc"`
+	AlamatPemasok     string  `json:"alamat_pemasok" db:"alamat_pemasok"`
+	NoKontrak         string  `json:"no_kontrak" db:"no_kontrak"`
+	Tanggal           string  `json:"tanggal" db:"tanggal"`
 }
 
 type GetContractsResp struct {
@@ -38,10 +39,11 @@ type GetContractResp struct {
 }
 
 type CreateContractReq struct {
-	NoKontrak  string `json:"no_kontrak" validate:"required,min=3"`
-	SupliersId string `json:"supliers" validate:"required"`
-	Kategori   string `json:"kategori" validate:"required,min=3"`
-	Tanggal    string `json:"tanggal" validate:"required,datetime=2006-01-02T15:04:05Z07:00"`
+	NoKontrak      string  `json:"no_kontrak" validate:"required,min=3"`
+	SupliersId     string  `json:"supliers" validate:"required"`
+	KodeDocumentBC *string `json:"kode_document_bc"`
+	Kategori       string  `json:"kategori" validate:"required,min=3"`
+	Tanggal        string  `json:"tanggal" validate:"required,datetime=2006-01-02T15:04:05Z07:00"`
 }
 
 type CreateContractResp struct {
@@ -61,14 +63,15 @@ type DeleteContractReq struct {
 }
 
 type UpdateContractDocumentReq struct {
-	NoKontrak    string `json:"no_kontrak" validate:"required"`
-	NoDocumentBc string `json:"no_document" validate:"required"`
+	NoKontrak       string `json:"no_kontrak" validate:"required"`
+	NoDocumentBc    string `json:"no_document" validate:"required"`
+	TanggalDocument string `json:"tanggal_document" db:"tanggal_document"`
 }
 
 type Transaction struct {
 	Common
-	Kode            string `json:"kode_document" db:"kode_document"`
-	NoDocument      string `json:"no_document" db:"no_document"`
+	Kategori        string `json:"kategori" db:"kategori"`
+	KodeDocument    string `json:"kode_document" db:"kode_document"`
 	TanggalDocument string `json:"tanggal_document" db:"tanggal_document"`
 	NoKontrak       string `json:"no_kontrak" db:"no_kontrak"`
 }
@@ -81,4 +84,23 @@ type GetTransactionsReq struct {
 type GetTransactionsResp struct {
 	Items []Transaction `json:"items"`
 	Meta  types.Meta    `json:"meta"`
+}
+
+type GetContractNotRequiredReq struct {
+	Q string `query:"q" validate:"omitempty,min=3"`
+	types.MetaQuery
+}
+
+type GetContractNotRequiredResp struct {
+	Items []ContractNotRequired `json:"items"`
+	Meta  types.Meta            `json:"meta"`
+}
+
+type ContractNotRequired struct {
+	Common
+	NoKontrak string `json:"no_kontrak" db:"no_kontrak"`
+}
+
+func (r *GetContractNotRequiredReq) SetDefault() {
+	r.MetaQuery.SetDefault()
 }

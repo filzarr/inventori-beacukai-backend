@@ -32,3 +32,7 @@ func (s *masterService) UpdateContractDocument(ctx context.Context, req *entity.
 func (s *masterService) GetTransactions(ctx context.Context, req *entity.GetTransactionsReq) (*entity.GetTransactionsResp, error) {
 	return s.repo.GetTransactions(ctx, req)
 }
+
+func (s *masterService) GetContractNotRequired(ctx context.Context, req *entity.GetContractNotRequiredReq) (*entity.GetContractNotRequiredResp, error) {
+	return s.repo.GetContractNotRequired(ctx, req)
+}
