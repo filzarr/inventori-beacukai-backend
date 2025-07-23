@@ -68,7 +68,7 @@ func (r *masterRepo) GetProduct(ctx context.Context, req *entity.GetProductReq) 
 	var data = new(entity.Product)
 
 	query := `
-		SELECT id, kode, nama, kategori, jumlah
+		SELECT id, kode, nama, kategori, saldo_awal, satuan
 		FROM products
 		WHERE id = ? AND deleted_at IS NULL`
 
@@ -102,10 +102,10 @@ func (r *masterRepo) CreateProduct(ctx context.Context, req *entity.CreateProduc
 func (r *masterRepo) UpdateProduct(ctx context.Context, req *entity.UpdateProductReq) error {
 	query := `
 		UPDATE products
-		SET kode = ?, nama = ?, kategori = ?, saldo_awal= ? , jumlah = ?, updated_at = NOW()
+		SET kode = ?, nama = ?, kategori = ?, saldo_awal= ? , jumlah = ?,satuan = ?, updated_at = NOW()
 		WHERE id = ? AND deleted_at IS NULL`
 
-	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), req.Kode, req.Nama, req.Kategori, req.SaldoAwal, req.Jumlah, req.Id); err != nil {
+	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), req.Kode, req.Nama, req.Kategori, req.SaldoAwal, req.Jumlah, req.Satuan, req.Id); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::UpdateProduct - failed to update product")
 		return err
 	}

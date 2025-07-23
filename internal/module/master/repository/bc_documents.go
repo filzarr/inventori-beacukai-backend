@@ -59,7 +59,7 @@ func (r *masterRepo) GetBcDocument(ctx context.Context, req *entity.GetBcDocumen
 		data = new(entity.BcDocument)
 	)
 
-	query := `SELECT id, kategori, kode_document, tanggal FROM bc_documents WHERE id = ? AND deleted_at IS NULL`
+	query := `SELECT id, kategori, kode_document FROM bc_documents WHERE id = ? AND deleted_at IS NULL`
 
 	if err := r.db.GetContext(ctx, data, r.db.Rebind(query), req.Id); err != nil {
 		if err == sql.ErrNoRows {

@@ -64,7 +64,7 @@ func (r *masterRepo) GetSuplier(ctx context.Context, req *entity.GetSuplierReq) 
 	)
 
 	query := `
-		SELECT id, name, alamat, created_at, updated_at
+		SELECT id, name, alamat
 		FROM supliers
 		WHERE id = ? AND deleted_at IS NULL`
 

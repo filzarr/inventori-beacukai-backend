@@ -43,3 +43,15 @@ type RegisterResp struct {
 type UpdateUserReq struct {
 	Id string `json:"id"`
 }
+
+type AuthListenReq struct {
+	Id string `json:"id"`
+}
+type AuthListenResp struct {
+	Id         string `json:"id" db:"id"`
+	Name       string `json:"name" db:"name"`
+	Email      string `json:"email" db:"email"`
+	Role       string `json:"role" db:"role"`
+	SuperAdmin bool   `json:"superadmin" db:"superadmin"`
+	RoleId     string `json:"role_id" db:"role_id"`
+}
