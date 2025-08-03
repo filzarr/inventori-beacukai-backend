@@ -15,6 +15,7 @@ type Buyer struct {
 	Common
 	Name   string `json:"name" db:"name"`
 	Alamat string `json:"alamat" db:"alamat"`
+	Npwp   string `json:"npwp" db:"npwp"`
 }
 
 type GetBuyersResp struct {
@@ -33,6 +34,7 @@ type GetBuyerResp struct {
 type CreateBuyerReq struct {
 	Name   string `json:"name" validate:"required,min=3"`
 	Alamat string `json:"alamat" validate:"required,min=3"`
+	Npwp   string `json:"npwp" validate:"required"`
 }
 
 type CreateBuyerResp struct {
@@ -43,6 +45,7 @@ type UpdateBuyerReq struct {
 	Id     string `params:"id" validate:"required"`
 	Name   string `json:"name" validate:"required,min=3"`
 	Alamat string `json:"alamat" validate:"required,min=3"`
+	Npwp   string `json:"npwp" validate:"required"`
 }
 
 type DeleteBuyerReq struct {

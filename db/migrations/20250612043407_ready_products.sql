@@ -2,7 +2,7 @@
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS ready_products (
     id CHAR(26) PRIMARY KEY,
-    kode CHAR(26) NOT NULL UNIQUE, 
+    kode VARCHAR(26) NOT NULL UNIQUE, 
     nama VARCHAR(255) NOT NULL,
     satuan VARCHAR(255) NOT NULL,
     jumlah INTEGER NOT NULL DEFAULT 0,

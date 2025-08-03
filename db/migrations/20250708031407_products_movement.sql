@@ -8,7 +8,7 @@ BEGIN
 END$$;
 CREATE TABLE IF NOT EXISTS products_movement (
     id CHAR(26) PRIMARY KEY, 
-    kode_barang CHAR(26) NOT NULL,
+    kode_barang VARCHAR(26) NOT NULL,
     jumlah INTEGER NOT NULL DEFAULT 0,
     status_perpindahan status_perpindahan NOT NULL DEFAULT 'Diminta',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,

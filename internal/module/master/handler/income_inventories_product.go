@@ -137,3 +137,59 @@ func (h *MasterHandler) deleteIncomeInventoriesProduct(c *fiber.Ctx) error {
 
 	return c.JSON(response.Success(nil, ""))
 }
+
+func (h *MasterHandler) getIncomeInventoriesProductsByContract(c *fiber.Ctx) error {
+	var (
+		req = new(entity.GetIncomeInventoryProductsByContractReq)
+		v   = adapter.Adapters.Validator
+	)
+
+	if err := c.QueryParser(req); err != nil {
+		log.Warn().Err(err).Msg("handler::getIncomeInventoriesProductsByContract - failed to parse request")
+		return c.Status(fiber.StatusBadRequest).JSON(response.Error(err))
+	}
+
+	req.SetDefault()
+
+	if err := v.Validate(req); err != nil {
+		log.Warn().Err(err).Any("req", req).Msg("handler::getIncomeInventoriesProductsByContract - invalid request")
+		code, errs := errmsg.Errors(err, req)
+		return c.Status(code).JSON(response.Error(errs))
+	}
+
+	resp, err := h.service.GetIncomeInventoryProductsByContract(c.Context(), req)
+	if err != nil {
+		code, errs := errmsg.Errors[error](err)
+		return c.Status(code).JSON(response.Error(errs))
+	}
+
+	return c.JSON(response.Success(resp, ""))
+}
+
+func (h *MasterHandler) getIncomeInventoriesProductsByContractAndKode(c *fiber.Ctx) error {
+	var (
+		req = new(entity.GetIncomeInventoryProductsByContractAndKodeReq)
+		v   = adapter.Adapters.Validator
+	)
+
+	if err := c.QueryParser(req); err != nil {
+		log.Warn().Err(err).Msg("handler::getIncomeInventoriesProductsByContractAndKode - failed to parse request")
+		return c.Status(fiber.StatusBadRequest).JSON(response.Error(err))
+	}
+
+	req.SetDefault()
+
+	if err := v.Validate(req); err != nil {
+		log.Warn().Err(err).Any("req", req).Msg("handler::getIncomeInventoriesProductsByContractAndKode - invalid request")
+		code, errs := errmsg.Errors(err, req)
+		return c.Status(code).JSON(response.Error(errs))
+	}
+
+	resp, err := h.service.GetIncomeInventoryProductsByContractAndKode(c.Context(), req)
+	if err != nil {
+		code, errs := errmsg.Errors[error](err)
+		return c.Status(code).JSON(response.Error(errs))
+	}
+
+	return c.JSON(response.Success(resp, ""))
+}

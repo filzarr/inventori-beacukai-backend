@@ -1,8 +1,8 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS users (
-    id char(26) PRIMARY KEY,
-    name CHAR(25) NOT NULL,
+    id CHAR(26) PRIMARY KEY,
+    name VARCHAR(25) NOT NULL,
     email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     role_id CHAR(26) NOT NULL,

@@ -2,8 +2,8 @@
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS outcomes_inventories_products (
     id CHAR(26) PRIMARY KEY,
-    no_kontrak CHAR(26) NOT NULL,
-    kode_barang CHAR(26) NOT NULL,
+    no_kontrak VARCHAR(26) NOT NULL,
+    kode_barang VARCHAR(26) NOT NULL,
     stok_awal INTEGER NOT NULL DEFAULT 0,
     jumlah INTEGER NOT NULL DEFAULT 0,
     tanggal TIMESTAMP WITH TIME ZONE NOT NULL,

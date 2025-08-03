@@ -9,9 +9,9 @@ END$$;
 
 CREATE TABLE IF NOT EXISTS products (
     id CHAR(26) PRIMARY KEY,
-    kode CHAR(26) NOT NULL UNIQUE, 
+    kode VARCHAR(26) NOT NULL UNIQUE, 
     nama VARCHAR(255) NOT NULL,
-    satuan char(50) NOT NULL,
+    satuan VARCHAR(50) NOT NULL,
     kategori kategori_produk NOT NULL,
     saldo_awal INTEGER NOT NULL DEFAULT 0,
     jumlah INTEGER NOT NULL DEFAULT 0,

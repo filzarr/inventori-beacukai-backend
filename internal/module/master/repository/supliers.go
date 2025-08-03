@@ -28,7 +28,8 @@ func (r *masterRepo) GetSupliers(ctx context.Context, req *entity.GetSupliersReq
 			COUNT(*) OVER() AS total_data,
 			id,
 			name,
-			alamat
+			alamat,
+			npwp
 		FROM supliers
 		WHERE deleted_at IS NULL
 	`
@@ -64,7 +65,7 @@ func (r *masterRepo) GetSuplier(ctx context.Context, req *entity.GetSuplierReq) 
 	)
 
 	query := `
-		SELECT id, name, alamat
+		SELECT id, name, alamat, npwp
 		FROM supliers
 		WHERE id = ? AND deleted_at IS NULL`
 
@@ -86,15 +87,16 @@ func (r *masterRepo) CreateSuplier(ctx context.Context, req *entity.CreateSuplie
 		INSERT INTO supliers (
 			id,
 			name,
-			alamat
-		) VALUES (?, ?, ?)`
+			alamat,
+			npwp
+		) VALUES (?, ?, ?, ?)`
 
 	var (
 		id   = ulid.Make().String()
 		resp = new(entity.CreateSuplierResp)
 	)
 
-	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), id, req.Name, req.Alamat); err != nil {
+	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), id, req.Name, req.Alamat, req.Npwp); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::CreateSuplier - failed to insert suplier")
 		return nil, err
 	}
@@ -109,10 +111,11 @@ func (r *masterRepo) UpdateSuplier(ctx context.Context, req *entity.UpdateSuplie
 		SET
 			name = ?,
 			alamat = ?,
+			npwp = ?,
 			updated_at = NOW()
 		WHERE id = ? AND deleted_at IS NULL`
 
-	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), req.Name, req.Alamat, req.Id); err != nil {
+	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), req.Name, req.Alamat, req.Npwp, req.Id); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::UpdateSuplier - failed to update suplier")
 		return err
 	}

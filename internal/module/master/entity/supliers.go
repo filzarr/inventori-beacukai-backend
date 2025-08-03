@@ -15,6 +15,7 @@ type Suplier struct {
 	Common
 	Name   string `json:"name" db:"name"`
 	Alamat string `json:"alamat" db:"alamat"`
+	Npwp   string `json:"npwp" db:"npwp"`
 }
 
 type GetSupliersResp struct {
@@ -33,6 +34,7 @@ type GetSuplierResp struct {
 type CreateSuplierReq struct {
 	Name   string `json:"name" validate:"required,min=3"`
 	Alamat string `json:"alamat" validate:"required,min=5"`
+	Npwp   string `json:"npwp" validate:"required"`
 }
 
 type CreateSuplierResp struct {
@@ -43,6 +45,7 @@ type UpdateSuplierReq struct {
 	Id     string `params:"id" validate:"required"`
 	Name   string `json:"name" validate:"required,min=3"`
 	Alamat string `json:"alamat" validate:"required,min=5"`
+	Npwp   string `json:"npwp" validate:"required"`
 }
 
 type DeleteSuplierReq struct {

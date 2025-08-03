@@ -24,7 +24,8 @@ func (r *masterRepo) GetBuyers(ctx context.Context, req *entity.GetBuyersReq) (*
 			SELECT COUNT(*) OVER() AS total_data,
 				id,
 				name,
-				alamat
+				alamat,
+				npwp
 			FROM buyers
 			WHERE deleted_at IS NULL`
 	)
@@ -60,7 +61,7 @@ func (r *masterRepo) GetBuyer(ctx context.Context, req *entity.GetBuyerReq) (*en
 	var data = new(entity.Buyer)
 
 	query := `
-		SELECT id, name, alamat
+		SELECT id, name, alamat, npwp
 		FROM buyers
 		WHERE id = ? AND deleted_at IS NULL`
 
@@ -78,12 +79,12 @@ func (r *masterRepo) GetBuyer(ctx context.Context, req *entity.GetBuyerReq) (*en
 
 func (r *masterRepo) CreateBuyer(ctx context.Context, req *entity.CreateBuyerReq) (*entity.CreateBuyerResp, error) {
 	query := `
-		INSERT INTO buyers (id, name, alamat)
-		VALUES (?, ?, ?)`
+		INSERT INTO buyers (id, name, alamat, npwp)
+		VALUES (?, ?, ?, ?)`
 
 	Id := ulid.Make().String()
 
-	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), Id, req.Name, req.Alamat); err != nil {
+	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), Id, req.Name, req.Alamat, req.Npwp); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::CreateBuyer - failed to create buyer")
 		return nil, err
 	}
@@ -94,10 +95,10 @@ func (r *masterRepo) CreateBuyer(ctx context.Context, req *entity.CreateBuyerReq
 func (r *masterRepo) UpdateBuyer(ctx context.Context, req *entity.UpdateBuyerReq) error {
 	query := `
 		UPDATE buyers
-		SET name = ?, alamat = ?, updated_at = NOW()
+		SET name = ?, alamat = ?, npwp = ?, updated_at = NOW()
 		WHERE id = ? AND deleted_at IS NULL`
 
-	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), req.Name, req.Alamat, req.Id); err != nil {
+	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), req.Name, req.Alamat, req.Npwp, req.Id); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::UpdateBuyer - failed to update buyer")
 		return err
 	}

@@ -11,10 +11,10 @@ END$$;
 
 CREATE TABLE IF NOT EXISTS contracts (
     id CHAR(26) PRIMARY KEY, 
-    no_kontrak CHAR(26) NOT NULL,
-    kode_document_bc CHAR(50), 
+    no_kontrak VARCHAR(26) NOT NULL,
+    kode_document_bc VARCHAR(50), 
     kategori_kontrak kategori_kontrak NOT NULL DEFAULT 'Pembelian',
-    supliers_id CHAR(26) NOT NULL,
+    supliers_id VARCHAR(26) NOT NULL,
     tanggal TIMESTAMP WITH TIME ZONE NOT NULL,
     tanggal_document_bc TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,

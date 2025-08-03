@@ -47,6 +47,13 @@ type MasterRepository interface {
 	GetTransactions(ctx context.Context, req *entity.GetTransactionsReq) (*entity.GetTransactionsResp, error)
 	GetContractNotRequired(ctx context.Context, req *entity.GetContractNotRequiredReq) (*entity.GetContractNotRequiredResp, error)
 
+	// Warehouses
+	GetWarehouses(ctx context.Context, req *entity.GetWarehousesReq) (*entity.GetWarehousesResp, error)
+	GetWarehouse(ctx context.Context, req *entity.GetWarehouseReq) (*entity.GetWarehouseResp, error)
+	CreateWarehouse(ctx context.Context, req *entity.CreateWarehouseReq) (*entity.CreateWarehouseResp, error)
+	UpdateWarehouse(ctx context.Context, req *entity.UpdateWarehouseReq) error
+	DeleteWarehouse(ctx context.Context, req *entity.DeleteWarehouseReq) error
+
 	// SaldoAwal
 	GetSaldoAwals(ctx context.Context, req *entity.GetSaldoAwalsReq) (*entity.GetSaldoAwalsResp, error)
 	GetSaldoAwal(ctx context.Context, req *entity.GetSaldoAwalReq) (*entity.GetSaldoAwalResp, error)
@@ -74,6 +81,8 @@ type MasterRepository interface {
 	CreateIncomeInventoryProduct(ctx context.Context, req *entity.CreateIncomeInventoryProductReq) (*entity.CreateIncomeInventoryProductResp, error)
 	UpdateIncomeInventoryProduct(ctx context.Context, req *entity.UpdateIncomeInventoryProductReq) error
 	DeleteIncomeInventoryProduct(ctx context.Context, req *entity.DeleteIncomeInventoryProductReq) error
+	GetIncomeInventoryProductsByContract(ctx context.Context, req *entity.GetIncomeInventoryProductsByContractReq) (*entity.GetIncomeInventoryProductsByContractResp, error)
+	GetIncomeInventoryProductsByContractAndKode(ctx context.Context, req *entity.GetIncomeInventoryProductsByContractAndKodeReq) (*entity.GetIncomeInventoryProductsByContractAndKodeResp, error)
 
 	// OutcomeInventoriesProducts
 	GetOutcomesInventoriesProducts(ctx context.Context, req *entity.GetOutcomesInventoriesProductsReq) (*entity.GetOutcomesInventoriesProductsResp, error)
@@ -172,6 +181,13 @@ type MasterService interface {
 	GetTransactions(ctx context.Context, req *entity.GetTransactionsReq) (*entity.GetTransactionsResp, error)
 	GetContractNotRequired(ctx context.Context, req *entity.GetContractNotRequiredReq) (*entity.GetContractNotRequiredResp, error)
 
+	// Warehouses
+	GetWarehouses(ctx context.Context, req *entity.GetWarehousesReq) (*entity.GetWarehousesResp, error)
+	GetWarehouse(ctx context.Context, req *entity.GetWarehouseReq) (*entity.GetWarehouseResp, error)
+	CreateWarehouse(ctx context.Context, req *entity.CreateWarehouseReq) (*entity.CreateWarehouseResp, error)
+	UpdateWarehouse(ctx context.Context, req *entity.UpdateWarehouseReq) error
+	DeleteWarehouse(ctx context.Context, req *entity.DeleteWarehouseReq) error
+
 	// SaldoAwal
 	GetSaldoAwals(ctx context.Context, req *entity.GetSaldoAwalsReq) (*entity.GetSaldoAwalsResp, error)
 	GetSaldoAwal(ctx context.Context, req *entity.GetSaldoAwalReq) (*entity.GetSaldoAwalResp, error)
@@ -206,6 +222,8 @@ type MasterService interface {
 	CreateIncomeInventoryProduct(ctx context.Context, req *entity.CreateIncomeInventoryProductReq) (*entity.CreateIncomeInventoryProductResp, error)
 	UpdateIncomeInventoryProduct(ctx context.Context, req *entity.UpdateIncomeInventoryProductReq) error
 	DeleteIncomeInventoryProduct(ctx context.Context, req *entity.DeleteIncomeInventoryProductReq) error
+	GetIncomeInventoryProductsByContract(ctx context.Context, req *entity.GetIncomeInventoryProductsByContractReq) (*entity.GetIncomeInventoryProductsByContractResp, error)
+	GetIncomeInventoryProductsByContractAndKode(ctx context.Context, req *entity.GetIncomeInventoryProductsByContractAndKodeReq) (*entity.GetIncomeInventoryProductsByContractAndKodeResp, error)
 
 	// TransactionIncomes
 	GetTransactionIncomes(ctx context.Context, req *entity.GetTransactionIncomesReq) (*entity.GetTransactionIncomesResp, error)

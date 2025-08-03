@@ -4,8 +4,8 @@
 -- Buat enum type untuk kategori BC jika belum ada
 CREATE TABLE IF NOT EXISTS saldo_awals (
     id CHAR(26) PRIMARY KEY,
-    kode_barang CHAR(26) NOT NULL,
-    saldo_awal CHAR(26) NOT NULL,
+    kode_barang VARCHAR(26) NOT NULL,
+    saldo_awal VARCHAR(26) NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
     deleted_at TIMESTAMP WITH TIME ZONE,

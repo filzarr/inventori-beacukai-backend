@@ -1,6 +1,7 @@
 package handler
 
 import (
+	m "inventori-beacukai-backend/internal/middleware"
 	"inventori-beacukai-backend/internal/module/master/ports"
 	"inventori-beacukai-backend/internal/module/master/repository"
 	"inventori-beacukai-backend/internal/module/master/service"
@@ -70,6 +71,13 @@ func (h *MasterHandler) Register(router fiber.Router) {
 	router.Get("/contracts-transactions", h.getTransactions)
 	router.Get("/contracts-not-required", h.getContractNotRequired)
 
+	// warehouses
+	router.Get("/warehouses", m.AuthBearer, h.getWarehouses)
+	router.Get("/warehouses/:id", m.AuthBearer, h.getWarehouse)
+	router.Post("/warehouses", m.AuthBearer, h.createWarehouse)
+	router.Put("/warehouses/:id", m.AuthBearer, h.updateWarehouse)
+	router.Delete("/warehouses/:id", m.AuthBearer, h.deleteWarehouse)
+
 	// contract_products
 	router.Get("/contract-products", h.getContractProducts)
 	router.Get("/contract-products/:id", h.getContractProduct)
@@ -83,6 +91,8 @@ func (h *MasterHandler) Register(router fiber.Router) {
 	router.Post("/income-inventories", h.createIncomeInventory)
 	router.Put("/income-inventories/:id", h.updateIncomeInventory)
 	router.Delete("/income-inventories/:id", h.deleteIncomeInventory)
+	router.Get("/income-inventories-by-contract", h.getIncomeInventoriesProductsByContract)
+	router.Get("/income-inventories-by-contract-and-kode", h.getIncomeInventoriesProductsByContractAndKode)
 
 	// income_inventories_products
 	router.Get("/income-inventories-products", h.getIncomeInventoriesProducts)

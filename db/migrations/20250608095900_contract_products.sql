@@ -2,11 +2,11 @@
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS contract_products (
     id CHAR(26) PRIMARY KEY,
-    no_kontrak CHAR(26) NOT NULL,
-    kode_barang CHAR(26) NOT NULL, -- disamakan dengan products.kode
+    no_kontrak VARCHAR(26) NOT NULL,
+    kode_barang VARCHAR(26) NOT NULL,
     jumlah INTEGER NOT NULL DEFAULT 0, 
     harga_satuan BIGINT NOT NULL DEFAULT 0,
-    kode_mata_uang CHAR(50) NOT NULL,
+    kode_mata_uang VARCHAR(50) NOT NULL,
     nilai_barang_fog BIGINT NOT NULL DEFAULT 0,
     nilai_barang_rp BIGINT NOT NULL DEFAULT 0,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,

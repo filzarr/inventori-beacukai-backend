@@ -24,3 +24,11 @@ func (s *masterService) UpdateIncomeInventoryProduct(ctx context.Context, req *e
 func (s *masterService) DeleteIncomeInventoryProduct(ctx context.Context, req *entity.DeleteIncomeInventoryProductReq) error {
 	return s.repo.DeleteIncomeInventoryProduct(ctx, req)
 }
+
+func (s *masterService) GetIncomeInventoryProductsByContract(ctx context.Context, req *entity.GetIncomeInventoryProductsByContractReq) (*entity.GetIncomeInventoryProductsByContractResp, error) {
+	return s.repo.GetIncomeInventoryProductsByContract(ctx, req)
+}
+
+func (s *masterService) GetIncomeInventoryProductsByContractAndKode(ctx context.Context, req *entity.GetIncomeInventoryProductsByContractAndKodeReq) (*entity.GetIncomeInventoryProductsByContractAndKodeResp, error) {
+	return s.repo.GetIncomeInventoryProductsByContractAndKode(ctx, req)
+}

@@ -24,47 +24,47 @@ func (r *masterRepo) GetIncomeInventoryProducts(ctx context.Context, req *entity
 		args = make([]any, 0)
 	)
 	resp.Items = make([]entity.IncomeInventoryProduct, 0)
-
 	query := `
-		WITH total_masuk AS (
-			SELECT
-				no_kontrak,
-				kode_barang,
-				SUM(jumlah) AS jumlah_masuk
-			FROM income_inventories_products
-			WHERE deleted_at IS NULL
-			GROUP BY no_kontrak, kode_barang
-		)
 		SELECT
 			COUNT(*) OVER() AS total_data,
-			cp.no_kontrak,
-			cp.kode_barang,
+			cp.id,
+			cp.no_kontrak AS no_kontrak,
+			p.kode AS kode_barang,
 			p.nama AS nama_barang,
-			COALESCE(tm.jumlah_masuk, 0) AS jumlah_masuk,
+			p.saldo_awal AS saldo_awal,
 			cp.jumlah AS jumlah_kontrak,
-			MIN(iip.id) AS id  -- ambil salah satu id untuk representasi
+			cp.nilai_barang_fog,
+			cp.nilai_barang_rp,
+			COALESCE(SUM(iip.jumlah), 0) AS jumlah_realisasi
 		FROM contract_products cp
 		JOIN products p ON cp.kode_barang = p.kode
-		LEFT JOIN total_masuk tm ON tm.no_kontrak = cp.no_kontrak AND tm.kode_barang = cp.kode_barang
-		LEFT JOIN income_inventories_products iip ON iip.no_kontrak = cp.no_kontrak AND iip.kode_barang = cp.kode_barang AND iip.deleted_at IS NULL
-		WHERE cp.deleted_at IS NULL
+		LEFT JOIN income_inventories_products iip 
+			ON iip.kode_barang = cp.kode_barang 
+			AND iip.no_kontrak = cp.no_kontrak
+		WHERE cp.deleted_at IS NULL 
 	`
 
 	if req.Q != "" {
 		query += ` AND (
-			iip.kode_barang ILIKE '%' || ? || '%'
+			p.kode_barang ILIKE '%' || ? || '%'
 		)`
 		args = append(args, req.Q)
 	}
 	if req.Full {
-		query += ` AND COALESCE(tm.jumlah_masuk, 0) < cp.jumlah`
+		query += ` AND COALESCE(iip.jumlah, 0) < cp.jumlah`
 	}
 
 	query += `
-		GROUP BY cp.no_kontrak, cp.kode_barang, p.nama, cp.jumlah, tm.jumlah_masuk
-		ORDER BY cp.no_kontrak, cp.kode_barang`
+		GROUP BY
+			cp.id,
+			cp.no_kontrak,
+			p.kode,
+			p.nama,
+			p.saldo_awal,
+			cp.jumlah
+		ORDER BY p.kode`
 
-	query += ` LIMIT ? OFFSET ?`
+	query += ` LIMIT ? OFFSET ?;`
 	args = append(args, req.Paginate, (req.Page-1)*req.Paginate)
 
 	if err := r.db.SelectContext(ctx, &data, r.db.Rebind(query), args...); err != nil {
@@ -119,44 +119,59 @@ func (r *masterRepo) GetIncomeInventoryProduct(ctx context.Context, req *entity.
 }
 
 func (r *masterRepo) CreateIncomeInventoryProduct(ctx context.Context, req *entity.CreateIncomeInventoryProductReq) (*entity.CreateIncomeInventoryProductResp, error) {
-	query := `
-		INSERT INTO income_inventories_products (
-			id,
-			no_kontrak,
-			kode_barang,
-			lokasi,
-			stok_awal,
-			jumlah
-		) VALUES (?, ?, ?, ?, ?, ?)
-	`
-
 	var (
 		Id   = ulid.Make().String()
 		resp = new(entity.CreateIncomeInventoryProductResp)
 	)
-
 	tx, err := r.db.BeginTxx(ctx, nil)
 	if err != nil {
 		log.Error().Err(err).Msg("repo::CreateIncomeInventoryProduct - failed to start transaction")
 		return nil, err
 	}
-	defer tx.Rollback()
-
-	// Insert ke income_inventories_products
-	if _, err := tx.ExecContext(ctx, tx.Rebind(query), Id, req.NoKontrak, req.KodeBarang, req.Lokasi, req.SaldoAwal, req.Jumlah); err != nil {
+	query := `
+		INSERT INTO income_inventories_products (
+			id,
+			no_kontrak,
+			kode_barang,
+			warehouse_location,
+			driver,
+			license_plate,
+			bruto_weight,
+			netto_weight,
+			starting_time,
+			ending_time,
+			stok_awal,
+			jumlah,
+			tanggal
+		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+	`
+	_, err = tx.ExecContext(ctx, tx.Rebind(query), Id,
+		req.NoKontrak,
+		req.KodeBarang,
+		req.WarehouseLocation,
+		req.Driver,
+		req.LicensePlate,
+		req.BrutoWeight,
+		req.NettoWeight,
+		req.StartingTime,
+		req.EndingTime,
+		req.SaldoAwal,
+		req.Jumlah,
+		req.Tanggal)
+	if err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::CreateIncomeInventoryProduct - failed to insert")
+		tx.Rollback()
 		return nil, err
 	}
 
-	// Update stok di tabel products
 	updateStockQuery := `
 		UPDATE products
 		SET jumlah = jumlah + ?
 		WHERE kode = ?
 	`
-
 	if _, err := tx.ExecContext(ctx, tx.Rebind(updateStockQuery), req.Jumlah, req.KodeBarang); err != nil {
 		log.Error().Err(err).Msg("repo::CreateIncomeInventoryProduct - failed to update product stock")
+		tx.Rollback()
 		return nil, err
 	}
 
@@ -206,4 +221,86 @@ func (r *masterRepo) DeleteIncomeInventoryProduct(ctx context.Context, req *enti
 	}
 
 	return nil
+}
+
+func (r *masterRepo) GetIncomeInventoryProductsByContract(ctx context.Context, req *entity.GetIncomeInventoryProductsByContractReq) (*entity.GetIncomeInventoryProductsByContractResp, error) {
+	var (
+		resp = new(entity.GetIncomeInventoryProductsByContractResp)
+		data = make([]entity.IncomeInventoryProductByContract, 0)
+	)
+
+	query := `
+		SELECT
+			cp.id,
+			cp.no_kontrak AS no_kontrak,
+			p.kode AS kode_barang,
+			p.nama AS nama_barang,
+			p.saldo_awal AS saldo_awal,
+			cp.jumlah AS jumlah_kontrak,
+			cp.nilai_barang_fog,
+			cp.nilai_barang_rp,
+			COALESCE(SUM(iip.jumlah), 0) AS jumlah_realisasi
+		FROM contract_products cp
+		JOIN products p ON cp.kode_barang = p.kode
+		LEFT JOIN income_inventories_products iip 
+			ON iip.kode_barang = cp.kode_barang 
+			AND iip.no_kontrak = cp.no_kontrak
+		WHERE cp.no_kontrak = ?
+		AND cp.deleted_at IS NULL
+		GROUP BY
+			cp.id,
+			cp.no_kontrak,
+			p.kode,
+			p.nama,
+			p.saldo_awal,
+			cp.jumlah
+		ORDER BY p.kode;
+	`
+
+	if err := r.db.SelectContext(ctx, &data, r.db.Rebind(query), req.NoKontrak); err != nil {
+		log.Error().Err(err).Any("req", req).Msg("repo::GetIncomeInventoryProductByContract - failed to query")
+		return nil, err
+	}
+
+	resp.Items = data
+	return resp, nil
+}
+
+func (r *masterRepo) GetIncomeInventoryProductsByContractAndKode(ctx context.Context, req *entity.GetIncomeInventoryProductsByContractAndKodeReq) (*entity.GetIncomeInventoryProductsByContractAndKodeResp, error) {
+	var (
+		resp = new(entity.GetIncomeInventoryProductsByContractAndKodeResp)
+		data = make([]entity.IncomeInventoryProductsByContractAndKode, 0)
+	)
+
+	query := `
+		SELECT
+			iip.id,
+			iip.no_kontrak AS no_kontrak,
+			iip.kode_barang AS kode_barang,
+			p.kode AS kode_barang,
+			p.nama AS nama_barang,
+			w.nama AS lokasi_penyimpanan,
+			iip.driver AS driver,
+			iip.jumlah AS jumlah_masuk,
+			iip.license_plate AS license_plate,
+			iip.bruto_weight AS bruto_weight,
+			iip.netto_weight AS netto_weight,
+			iip.starting_time AS jam_masuk,
+			iip.ending_time AS jam_keluar,
+			iip.tanggal AS tanggal
+		FROM income_inventories_products iip
+			JOIN products p ON iip.kode_barang = p.kode
+			JOIN warehouses w ON iip.warehouse_location = w.kode
+		WHERE iip.no_kontrak = ?
+			AND iip.kode_barang = ?
+			AND iip.deleted_at IS NULL
+	`
+
+	if err := r.db.SelectContext(ctx, &data, r.db.Rebind(query), req.NoKontrak, req.KodeBarang); err != nil {
+		log.Error().Err(err).Any("req", req).Msg("repo::GetIncomeInventoryProductByContractAndKode - failed to query")
+		return nil, err
+	}
+
+	resp.Items = data
+	return resp, nil
 }
