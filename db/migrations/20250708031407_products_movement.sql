@@ -8,6 +8,8 @@ BEGIN
 END$$;
 CREATE TABLE IF NOT EXISTS products_movement (
     id CHAR(26) PRIMARY KEY, 
+    warehouses_from VARCHAR(26) NOT NULL,
+    warehouses_to VARCHAR(26) NOT NULL,
     kode_barang VARCHAR(26) NOT NULL,
     jumlah INTEGER NOT NULL DEFAULT 0,
     status_perpindahan status_perpindahan NOT NULL DEFAULT 'Diminta',
@@ -15,7 +17,9 @@ CREATE TABLE IF NOT EXISTS products_movement (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
     deleted_at TIMESTAMP WITH TIME ZONE,
 
-    FOREIGN KEY (kode_barang) REFERENCES products (kode)
+    FOREIGN KEY (kode_barang) REFERENCES products (kode),
+    FOREIGN KEY (warehouses_from) REFERENCES warehouses (kode),
+    FOREIGN KEY (warehouses_to) REFERENCES warehouses (kode)
 );
 -- +goose StatementEnd
 

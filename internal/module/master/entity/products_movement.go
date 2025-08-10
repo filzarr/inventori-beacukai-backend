@@ -16,10 +16,11 @@ func (r *GetProductsMovementReq) SetDefault() {
 
 type ProductsMovement struct {
 	Common
-	KodeBarang string `json:"kode_barang" db:"kode_barang"`
-	Jumlah     int    `json:"jumlah" db:"jumlah"`
-	NamaBarang string `json:"nama_barang" db:"nama_barang"`
-	Satuan     string `json:"satuan" db:"satuan"`
+	GudangPemohon string `json:"gudang_pemohon" db:"gudang_pemohon"`
+	KodeBarang    string `json:"kode_barang" db:"kode_barang"`
+	Jumlah        int    `json:"jumlah" db:"jumlah"`
+	NamaBarang    string `json:"nama_barang" db:"nama_barang"`
+	Satuan        string `json:"satuan" db:"satuan"`
 }
 
 type GetProductsMovementResp struct {
@@ -36,8 +37,10 @@ type GetProductsMovementRespID struct {
 }
 
 type CreateProductsMovementReq struct {
-	KodeBarang string `json:"kode_barang" validate:"required,min=1"`
-	Jumlah     int    `json:"jumlah" validate:"required,gt=0"`
+	WarehouseFrom string `json:"warehouse_from" validate:"required"`
+	WarehouseTo   string `json:"warehouse_to" validate:"required"`
+	KodeBarang    string `json:"kode_barang" validate:"required,min=1"`
+	Jumlah        int    `json:"jumlah" validate:"required,gt=0"`
 }
 
 type CreateProductsMovementResp struct {

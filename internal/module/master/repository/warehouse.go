@@ -28,6 +28,11 @@ func (r *masterRepo) GetWarehouses(ctx context.Context, req *entity.GetWarehouse
 
 	resp.Items = make([]entity.Warehouse, 0)
 
+	if req.Kategori != "" {
+		query += ` AND kategori = ?`
+		args = append(args, req.Kategori)
+	}
+
 	if req.Q != "" {
 		query += ` AND (
 			kode ILIKE '%' || ? || '%'

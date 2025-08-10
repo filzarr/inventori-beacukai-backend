@@ -16,6 +16,7 @@ func (s *Seed) warehousesSeed() {
 		{"id": "01J3X0H3TK5MWPXK9D8GDRFZ25", "kode": "WH-BJ-002", "nama": "Gudang Barang Jadi B", "kategori": "Barang Jadi", "keterangan": "Gudang penyimpanan barang jadi siap kirim area B"},
 		{"id": "01J3X0H3TK5MWPXK9D8GDRFZ26", "kode": "WH-BB-002", "nama": "Gudang Bahan Baku Cadangan", "kategori": "Bahan Baku", "keterangan": "Gudang cadangan untuk bahan baku overflow"},
 		{"id": "01J3X0H3TK5MWPXK9D8GDRFZ27", "kode": "WH-MS-002", "nama": "Gudang Tools dan Equipment", "kategori": "Mesin/Sparepart", "keterangan": "Gudang penyimpanan tools dan equipment produksi"},
+		{"id": "01J3X0H3TK5MWPXK9D8GDRFZ28", "kode": "WH-PD-001", "nama": "Gudang Produksi 1", "kategori": "Produksi", "keterangan": "Gudang produksi minyak"},
 	}
 
 	tx, err := s.db.BeginTxx(context.Background(), nil)

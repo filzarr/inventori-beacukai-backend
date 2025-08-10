@@ -21,8 +21,9 @@ func (r *masterRepo) GetProductsMovement(ctx context.Context, req *entity.GetPro
 	data := []dao{}
 	args := []any{}
 	query := `
-        SELECT COUNT(*) OVER() AS total_data, pm.id, pm.kode_barang, pm.jumlah, p.nama AS nama_barang, p.satuan
+        SELECT COUNT(*) OVER() AS total_data, pm.id, pm.kode_barang, pm.jumlah, p.nama AS nama_barang, p.satuan, w.nama AS gudang_pemohon
         FROM products_movement pm JOIN products p ON pm.kode_barang = p.kode
+		JOIN warehouses w ON pm.warehouses_to = w.kode
         WHERE pm.deleted_at IS NULL
     `
 
@@ -76,12 +77,12 @@ func (r *masterRepo) CreateProductsMovement(ctx context.Context, req *entity.Cre
 
 	newID := ulid.Make().String()
 	query := `
-		INSERT INTO products_movement (id, kode_barang, jumlah)
-		VALUES (?, ?, ?)
+		INSERT INTO products_movement (id, kode_barang, jumlah, warehouses_from, warehouses_to)
+		VALUES (?, ?, ?, ?, ?)
 	`
 	query = r.db.Rebind(query)
 
-	_, err := r.db.ExecContext(ctx, query, newID, req.KodeBarang, req.Jumlah)
+	_, err := r.db.ExecContext(ctx, query, newID, req.KodeBarang, req.Jumlah, req.WarehouseFrom, req.WarehouseTo)
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -134,15 +135,19 @@ func (r *masterRepo) UpdateStatusProductsMovement(ctx context.Context, req *enti
 
 	// 1. Ambil data pergerakan produk
 	var kodeBarang string
+	var warehouse_to string
+	var warehouse_from string
 	var jumlah int
 	selectMovementQuery := `
-		SELECT kode_barang, jumlah 
+		SELECT kode_barang, jumlah, warehouses_from, warehouses_to 
 		FROM products_movement 
 		WHERE id = ? AND deleted_at IS NULL
 	`
 	movementData := struct {
-		KodeBarang *string `db:"kode_barang"`
-		Jumlah     *int    `db:"jumlah"`
+		KodeBarang    *string `db:"kode_barang"`
+		Jumlah        *int    `db:"jumlah"`
+		WarehouseTo   *string `db:"warehouses_to"`
+		WarehouseFrom *string `db:"warehouses_from"`
 	}{}
 	if err = tx.GetContext(ctx, &movementData, tx.Rebind(selectMovementQuery), req.Id); err != nil {
 		log.Error().Err(err).Msg("repo::UpdateStatusProductsMovement - failed to get movement data")
@@ -154,10 +159,11 @@ func (r *masterRepo) UpdateStatusProductsMovement(ctx context.Context, req *enti
 	}
 	kodeBarang = *movementData.KodeBarang
 	jumlah = *movementData.Jumlah
+	warehouse_to = *movementData.WarehouseTo
+	warehouse_from = *movementData.WarehouseFrom
 
 	log.Debug().Str("kode_barang", kodeBarang).Int("jumlah", jumlah).Msg("movement data")
 
-	// 1.1 Validasi: pastikan produk dengan kode_barang ini memang ada
 	var productExists bool
 	query := `SELECT EXISTS(SELECT 1 FROM products WHERE kode = ? AND deleted_at IS NULL)`
 	if err = tx.GetContext(ctx, &productExists, tx.Rebind(query), kodeBarang); err != nil {
@@ -168,7 +174,6 @@ func (r *masterRepo) UpdateStatusProductsMovement(ctx context.Context, req *enti
 		return fmt.Errorf("produk dengan kode_barang '%s' tidak ditemukan di tabel products", kodeBarang)
 	}
 
-	// 2. Update status ke "Diterima"
 	updateStatusQuery := `
 		UPDATE products_movement
 		SET status_perpindahan = 'Diterima', updated_at = CURRENT_TIMESTAMP
@@ -179,48 +184,44 @@ func (r *masterRepo) UpdateStatusProductsMovement(ctx context.Context, req *enti
 		return err
 	}
 
-	// 3. Kurangi stok produk
 	updateProductStokQuery := `
-		UPDATE products 
+		UPDATE warehouses_stocks 
 		SET jumlah = jumlah - ?, updated_at = CURRENT_TIMESTAMP
-		WHERE kode = ? AND deleted_at IS NULL
+		WHERE kode_barang = ? AND warehouse_kode = ? AND deleted_at IS NULL
 	`
-	if _, err = tx.ExecContext(ctx, tx.Rebind(updateProductStokQuery), jumlah, kodeBarang); err != nil {
+	if _, err = tx.ExecContext(ctx, tx.Rebind(updateProductStokQuery), jumlah, kodeBarang, warehouse_from); err != nil {
 		log.Error().Err(err).Msg("repo::UpdateStatusProductsMovement - failed to update product stock")
 		return err
 	}
 
-	// 4. Cek apakah kode_barang sudah ada di tabel productions
 	var exists bool
 	checkProductionQuery := `
 		SELECT EXISTS(
-			SELECT 1 FROM productions WHERE kode_barang = ? AND deleted_at IS NULL
+			SELECT 1 FROM warehouses_stocks WHERE kode_barang = ? AND warehouse_kode = ? AND deleted_at IS NULL
 		)
 	`
-	if err = tx.GetContext(ctx, &exists, tx.Rebind(checkProductionQuery), kodeBarang); err != nil {
+	if err = tx.GetContext(ctx, &exists, tx.Rebind(checkProductionQuery), kodeBarang, warehouse_to); err != nil {
 		log.Error().Err(err).Msg("repo::UpdateStatusProductsMovement - failed to check production existence")
 		return err
 	}
 
 	if exists {
-		// 5a. Update jumlah jika sudah ada
 		updateProductionQuery := `
-			UPDATE productions
+			UPDATE warehouses_stocks
 			SET jumlah = jumlah + ?, updated_at = CURRENT_TIMESTAMP
-			WHERE kode_barang = ? AND deleted_at IS NULL
+			WHERE kode_barang = ? AND warehouse_kode = ? AND  deleted_at IS NULL
 		`
-		if _, err = tx.ExecContext(ctx, tx.Rebind(updateProductionQuery), jumlah, kodeBarang); err != nil {
+		if _, err = tx.ExecContext(ctx, tx.Rebind(updateProductionQuery), jumlah, kodeBarang, warehouse_to); err != nil {
 			log.Error().Err(err).Msg("repo::UpdateStatusProductsMovement - failed to update production")
 			return err
 		}
 	} else {
-		// 5b. Insert baru jika belum ada
 		insertProductionQuery := `
-			INSERT INTO productions (id, kode_barang, jumlah, created_at, updated_at)
-			VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+			INSERT INTO warehouses_stocks (id, kode_barang, jumlah, warehouse_kode, created_at, updated_at)
+			VALUES (?, ?, ?, ? ,CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 		`
 		newID := ulid.Make().String()
-		if _, err = tx.ExecContext(ctx, tx.Rebind(insertProductionQuery), newID, kodeBarang, jumlah); err != nil {
+		if _, err = tx.ExecContext(ctx, tx.Rebind(insertProductionQuery), newID, kodeBarang, jumlah, warehouse_to); err != nil {
 			log.Error().Err(err).Msg("repo::UpdateStatusProductsMovement - failed to insert production")
 			return err
 		}

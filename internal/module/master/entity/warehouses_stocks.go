@@ -3,7 +3,8 @@ package entity
 import "inventori-beacukai-backend/pkg/types"
 
 type GetWarehousesStocksReq struct {
-	Q string `query:"q" validate:"omitempty,min=3"`
+	Q             string `query:"q" validate:"omitempty,min=3"`
+	WarehouseKode string `query:"warehouse" validate:"omitempty,min=3"`
 	types.MetaQuery
 }
 
@@ -14,7 +15,9 @@ func (r *GetWarehousesStocksReq) SetDefault() {
 type WarehousesStock struct {
 	Common
 	WarehouseKode string `json:"warehouse_kode" db:"warehouse_kode"`
+	NamaBarang    string `json:"nama_barang" db:"nama_barang"`
 	KodeBarang    string `json:"kode_barang" db:"kode_barang"`
+	Satuan        string `json:"satuan" db:"satuan"`
 	Jumlah        int    `json:"jumlah" db:"jumlah"`
 }
 

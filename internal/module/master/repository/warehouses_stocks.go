@@ -21,17 +21,21 @@ func (r *masterRepo) GetWarehousesStocks(ctx context.Context, req *entity.GetWar
 		data  = make([]dao, 0)
 		args  = make([]any, 0, 3)
 		query = `
-			SELECT COUNT(*) OVER() AS total_data, id, warehouse_kode, kode_barang, jumlah
-			FROM warehouses_stocks
-			WHERE deleted_at IS NULL`
+			SELECT COUNT(*) OVER() AS total_data, ws.id, ws.warehouse_kode, ws.kode_barang, ws.jumlah, p.nama AS nama_barang, p.satuan AS satuan
+			FROM warehouses_stocks ws
+			LEFT JOIN products p ON ws.kode_barang = p.kode
+			WHERE ws.deleted_at IS NULL`
 	)
 
 	resp.Items = make([]entity.WarehousesStock, 0)
-
+	if req.WarehouseKode != "" {
+		query += ` AND ws.warehouse_kode = ?`
+		args = append(args, req.WarehouseKode)
+	}
 	if req.Q != "" {
 		query += ` AND (
-			warehouse_kode ILIKE '%' || ? || '%' OR
-			kode_barang ILIKE '%' || ? || '%'
+			ws.warehouse_kode ILIKE '%' || ? || '%' OR
+			ws.kode_barang ILIKE '%' || ? || '%'
 		)`
 		args = append(args, req.Q, req.Q)
 	}
