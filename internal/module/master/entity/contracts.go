@@ -16,10 +16,10 @@ func (r *GetContractsReq) SetDefault() {
 
 type Contract struct {
 	Common
-	Kategori          string  `json:"kategori" db:"kategori_kontrak"`
+	Kategori          *string `json:"kategori" db:"kategori"`
 	NamaPemasok       string  `json:"nama_pemasok" db:"nama_pemasok"`
-	KodeDocumentBC    *string `json:"kode_document_bc" db:"kode_document_bc"`
 	TanggalDocumentBc *string `json:"tanggal_document_bc" db:"tanggal_document_bc"`
+	Npwp              string  `json:"npwp_pemasok" db:"npwp_pemasok"`
 	AlamatPemasok     string  `json:"alamat_pemasok" db:"alamat_pemasok"`
 	NoKontrak         string  `json:"no_kontrak" db:"no_kontrak"`
 	Tanggal           string  `json:"tanggal" db:"tanggal"`
@@ -39,11 +39,10 @@ type GetContractResp struct {
 }
 
 type CreateContractReq struct {
-	NoKontrak      string  `json:"no_kontrak" validate:"required,min=3"`
-	SupliersId     string  `json:"supliers" validate:"required"`
-	KodeDocumentBC *string `json:"kode_document_bc"`
-	Kategori       string  `json:"kategori" validate:"required,min=3"`
-	Tanggal        string  `json:"tanggal" validate:"required,datetime=2006-01-02T15:04:05Z07:00"`
+	NoKontrak  string `json:"no_kontrak" validate:"required,min=3"`
+	SupliersId string `json:"supliers" validate:"required"`
+	Kategori   string `json:"kategori" validate:"required,min=3"`
+	Tanggal    string `json:"tanggal" validate:"required,datetime=2006-01-02T15:04:05Z07:00"`
 }
 
 type CreateContractResp struct {
@@ -87,7 +86,8 @@ type GetTransactionsResp struct {
 }
 
 type GetContractNotRequiredReq struct {
-	Q string `query:"q" validate:"omitempty,min=3"`
+	Q  string `query:"q" validate:"omitempty,min=3"`
+	Bc bool   `query:"bc" validate:"omitempty"`
 	types.MetaQuery
 }
 

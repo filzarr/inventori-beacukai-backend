@@ -45,6 +45,7 @@ type CreateIncomeInventoryProductReq struct {
 	LicensePlate      string `json:"license_plate" validate:"required"`
 	BrutoWeight       int64  `json:"bruto_weight" validate:"required"`
 	NettoWeight       int64  `json:"netto_weight" validate:"required"`
+	EmptyWeight       int64  `json:"empty_weight" validate:"required"`
 	StartingTime      string `json:"starting_time" validate:"required"`
 	EndingTime        string `json:"ending_time" validate:"required"`
 	Tanggal           string `json:"tanggal" validate:"required"`
@@ -64,6 +65,7 @@ type UpdateIncomeInventoryProductReq struct {
 	Driver            string `json:"driver" validate:"required"`
 	LicensePlate      string `json:"license_plate" validate:"required"`
 	BrutoWeight       int64  `json:"bruto_weight" validate:"required"`
+	EmptyWeight       int64  `json:"empty_weight" validate:"required"`
 	NettoWeight       int64  `json:"netto_weight" validate:"required"`
 	StartingTime      string `json:"starting_time" validate:"required"`
 	EndingTime        string `json:"ending_time" validate:"required"`

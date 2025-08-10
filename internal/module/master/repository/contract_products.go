@@ -49,9 +49,10 @@ func (r *masterRepo) GetContractProducts(ctx context.Context, req *entity.GetCon
 			cp.jumlah,
 			p.jumlah AS stok,
 			p.nama AS nama_barang,
-			s.name AS nama_pemasok,
+			s.name AS nama_pemasok, 
 			s.alamat, 
 			cp.harga_satuan,
+			p.satuan AS satuan,
 			cp.kode_mata_uang,
 			cp.nilai_barang_fog,
 			cp.nilai_barang_rp

@@ -20,6 +20,7 @@ type ContractProduct struct {
 	Alamat         string `json:"alamat" db:"alamat"`
 	Stok           int    `json:"stok" db:"stok"`
 	NamaBarang     string `json:"nama_barang" db:"nama_barang"`
+	Satuan         string `json:"satuan" db:"satuan"`
 	Jumlah         int    `json:"jumlah" db:"jumlah"`
 	HargaSatuan    int    `json:"harga_satuan" db:"harga_satuan"`
 	KodeMataUang   string `json:"kode_mata_uang" db:"kode_mata_uang"`

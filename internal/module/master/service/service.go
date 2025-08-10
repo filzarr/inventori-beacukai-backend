@@ -8,7 +8,7 @@ type masterService struct {
 	repo ports.MasterRepository
 }
 
-func NewMasterService(repo ports.MasterService) *masterService {
+func NewMasterService(repo ports.MasterRepository) *masterService {
 	return &masterService{
 		repo: repo,
 	}

@@ -77,6 +77,18 @@ func (h *MasterHandler) Register(router fiber.Router) {
 	router.Post("/warehouses", m.AuthBearer, h.createWarehouse)
 	router.Put("/warehouses/:id", m.AuthBearer, h.updateWarehouse)
 	router.Delete("/warehouses/:id", m.AuthBearer, h.deleteWarehouse)
+	// warehouses-stocks
+	router.Get("/warehouses-stocks", m.AuthBearer, h.getWarehousesStocks)
+	router.Get("/warehouses-stocks/:id", m.AuthBearer, h.getWarehousesStock)
+	router.Post("/warehouses-stocks", m.AuthBearer, h.createWarehousesStock)
+	router.Put("/warehouses-stocks/:id", m.AuthBearer, h.updateWarehousesStock)
+	router.Delete("/warehouses-stocks/:id", m.AuthBearer, h.deleteWarehousesStock)
+	// contracts-bc
+	router.Get("/contracts-bc", m.AuthBearer, h.getContractsBc)
+	router.Get("/contracts-bc/:id", m.AuthBearer, h.getContractBc)
+	router.Post("/contracts-bc", m.AuthBearer, h.createContractBc)
+	router.Put("/contracts-bc/:id", m.AuthBearer, h.updateContractBc)
+	router.Delete("/contracts-bc/:id", m.AuthBearer, h.deleteContractBc)
 
 	// contract_products
 	router.Get("/contract-products", h.getContractProducts)

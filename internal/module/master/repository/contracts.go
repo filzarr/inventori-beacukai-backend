@@ -22,9 +22,10 @@ func (r *masterRepo) GetContracts(ctx context.Context, req *entity.GetContractsR
 		args  = make([]any, 0, 3)
 		query = `
 			SELECT COUNT(*) OVER() AS total_data,
-			       c.id, c.kategori_kontrak, c.no_kontrak, c.kode_document_bc, s.name AS nama_pemasok, s.alamat AS alamat_pemasok, c.tanggal
+			       c.id, c.no_kontrak, s.name AS nama_pemasok, s.npwp AS npwp_pemasok, s.alamat AS alamat_pemasok, c.tanggal
+				   
 			FROM contracts c
-			JOIN supliers s ON c.supliers_id = s.id
+			JOIN supliers s ON c.supliers_id = s.id 
 			WHERE c.deleted_at IS NULL`
 	)
 	if req.Q != "" {
@@ -58,7 +59,7 @@ func (r *masterRepo) GetContract(ctx context.Context, req *entity.GetContractReq
 			       c.id, c.kategori, c.no_kontrak, s.name, s.alamat, c.tanggal
 			FROM contracts c
 			JOIN supliers s ON c.supliers_id = s.id
-			WHERE c.deleted_at IS NULL`
+			WHERE c.deleted_at IS NULL AND c.no_kontrak = ?`
 
 	if err := r.db.GetContext(ctx, data, r.db.Rebind(query), req.Id); err != nil {
 		if err == sql.ErrNoRows {
@@ -73,11 +74,11 @@ func (r *masterRepo) GetContract(ctx context.Context, req *entity.GetContractReq
 }
 
 func (r *masterRepo) CreateContract(ctx context.Context, req *entity.CreateContractReq) (*entity.CreateContractResp, error) {
-	query := `INSERT INTO contracts (id, no_kontrak, kategori_kontrak, kode_document_bc, supliers_id, tanggal) VALUES (?, ?, ?, ?, ?, ?)`
+	query := `INSERT INTO contracts (id, no_kontrak, kategori_kontrak, supliers_id, tanggal) VALUES (?, ?, ?, ?, ?)`
 	var resp = new(entity.CreateContractResp)
 	id := ulid.Make().String()
 
-	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), id, req.NoKontrak, req.Kategori, req.KodeDocumentBC, req.SupliersId, req.Tanggal); err != nil {
+	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), id, req.NoKontrak, req.Kategori, req.SupliersId, req.Tanggal); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::CreateContract - failed to create contract")
 		return nil, err
 	}
@@ -170,22 +171,27 @@ func (r *masterRepo) GetContractNotRequired(ctx context.Context, req *entity.Get
 		data  = make([]dao, 0)
 		args  = make([]any, 0, 3)
 		query = `
-			SELECT c.no_kontrak
+			SELECT c.id, c.no_kontrak
 			FROM contracts c
 			LEFT JOIN (
-				SELECT no_kontrak, SUM(jumlah) AS total_jumlah_income
+				SELECT no_kontrak, SUM(jumlah) AS total_jumlah_income, COUNT(no_kontrak) AS total_kontrak_iip
 				FROM income_inventories_products
 				GROUP BY no_kontrak
 			) iip ON c.no_kontrak = iip.no_kontrak
+			LEFT JOIN (
+				SELECT no_kontrak, COUNT(no_kontrak) AS total_kontrak_bc
+				FROM contracts_bc
+				GROUP BY no_kontrak 
+			) cb ON  c.no_kontrak = cb.no_kontrak
 			JOIN (
 				SELECT no_kontrak, SUM(jumlah) AS total_jumlah_kontrak
 				FROM contract_products
 				GROUP BY no_kontrak
 			) cp ON c.no_kontrak = cp.no_kontrak
-			WHERE COALESCE(iip.total_jumlah_income, 0) < cp.total_jumlah_kontrak
-
+			WHERE COALESCE(iip.total_jumlah_income, 0) < cp.total_jumlah_kontrak AND c.deleted_at IS NULL
 `
 	)
+
 	if req.Q != "" {
 		query += ` AND c.no_kontrak ILIKE '%' || ? || '%'`
 		args = append(args, req.Q)

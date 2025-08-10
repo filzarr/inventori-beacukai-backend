@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS income_inventories_products (
     driver VARCHAR(50) NOT NULL,
     license_plate VARCHAR(50) NOT NULL,
     bruto_weight BIGINT NOT NULL DEFAULT 0,
+    empty_weight BIGINT NOT NULL DEFAULT 0,
     netto_weight BIGINT NOT NULL DEFAULT 0,
     starting_time TIME NOT NULL,
     ending_time TIME NOT NULL,

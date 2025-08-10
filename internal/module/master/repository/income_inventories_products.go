@@ -38,10 +38,11 @@ func (r *masterRepo) GetIncomeInventoryProducts(ctx context.Context, req *entity
 			COALESCE(SUM(iip.jumlah), 0) AS jumlah_realisasi
 		FROM contract_products cp
 		JOIN products p ON cp.kode_barang = p.kode
+		JOIN contracts c ON c.no_kontrak = cp.no_kontrak
 		LEFT JOIN income_inventories_products iip 
 			ON iip.kode_barang = cp.kode_barang 
 			AND iip.no_kontrak = cp.no_kontrak
-		WHERE cp.deleted_at IS NULL 
+		WHERE cp.deleted_at IS NULL AND c.deleted_at IS NULL
 	`
 
 	if req.Q != "" {
@@ -128,6 +129,20 @@ func (r *masterRepo) CreateIncomeInventoryProduct(ctx context.Context, req *enti
 		log.Error().Err(err).Msg("repo::CreateIncomeInventoryProduct - failed to start transaction")
 		return nil, err
 	}
+	existingProductQuery := `
+		SELECT COUNT(*) FROM products WHERE kode = ? AND deleted_at IS NULL
+	`
+	var count int
+	if err := tx.GetContext(ctx, &count, tx.Rebind(existingProductQuery), req.KodeBarang); err != nil {
+		log.Error().Err(err).Msg("repo::CreateIncomeInventoryProduct - failed to check existing product")
+		tx.Rollback()
+		return nil, err
+	}
+	if count == 0 {
+		log.Warn().Msg("repo::CreateIncomeInventoryProduct - product not found")
+		tx.Rollback()
+		return nil, errmsg.NewCustomErrors(404).SetMessage("Produk tidak ditemukan")
+	}
 	query := `
 		INSERT INTO income_inventories_products (
 			id,
@@ -138,12 +153,13 @@ func (r *masterRepo) CreateIncomeInventoryProduct(ctx context.Context, req *enti
 			license_plate,
 			bruto_weight,
 			netto_weight,
+			empty_weight,
 			starting_time,
 			ending_time,
 			stok_awal,
 			jumlah,
 			tanggal
-		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`
 	_, err = tx.ExecContext(ctx, tx.Rebind(query), Id,
 		req.NoKontrak,
@@ -153,6 +169,7 @@ func (r *masterRepo) CreateIncomeInventoryProduct(ctx context.Context, req *enti
 		req.LicensePlate,
 		req.BrutoWeight,
 		req.NettoWeight,
+		req.EmptyWeight,
 		req.StartingTime,
 		req.EndingTime,
 		req.SaldoAwal,
@@ -164,15 +181,56 @@ func (r *masterRepo) CreateIncomeInventoryProduct(ctx context.Context, req *enti
 		return nil, err
 	}
 
-	updateStockQuery := `
-		UPDATE products
-		SET jumlah = jumlah + ?
-		WHERE kode = ?
+	var wsCount int
+	checkWSQuery := `
+		SELECT COUNT(*) 
+		FROM warehouses_stocks 
+		WHERE warehouse_kode = ? 
+		  AND kode_barang = ? 
+		  AND deleted_at IS NULL
 	`
-	if _, err := tx.ExecContext(ctx, tx.Rebind(updateStockQuery), req.Jumlah, req.KodeBarang); err != nil {
-		log.Error().Err(err).Msg("repo::CreateIncomeInventoryProduct - failed to update product stock")
+	if err := tx.GetContext(ctx, &wsCount, tx.Rebind(checkWSQuery), req.WarehouseLocation, req.KodeBarang); err != nil {
+		log.Error().Err(err).Msg("repo::CreateIncomeInventoryProduct - failed to check warehouses_stocks")
 		tx.Rollback()
 		return nil, err
+	}
+
+	if wsCount == 0 {
+		wsID := ulid.Make().String()
+		insertWSQuery := `
+			INSERT INTO warehouses_stocks (
+				id,
+				warehouse_kode,
+				kode_barang,
+				jumlah
+			) VALUES (?, ?, ?, ?)
+		`
+		if _, err := tx.ExecContext(ctx, tx.Rebind(insertWSQuery),
+			wsID,
+			req.WarehouseLocation,
+			req.KodeBarang,
+			req.Jumlah,
+		); err != nil {
+			log.Error().Err(err).Msg("repo::CreateIncomeInventoryProduct - failed to insert warehouses_stocks")
+			tx.Rollback()
+			return nil, err
+		}
+	} else {
+		updateWSQuery := `
+			UPDATE warehouses_stocks
+			SET jumlah = jumlah + ?, updated_at = CURRENT_TIMESTAMP
+			WHERE warehouse_kode = ? 
+			  AND kode_barang = ?
+		`
+		if _, err := tx.ExecContext(ctx, tx.Rebind(updateWSQuery),
+			req.Jumlah,
+			req.WarehouseLocation,
+			req.KodeBarang,
+		); err != nil {
+			log.Error().Err(err).Msg("repo::CreateIncomeInventoryProduct - failed to update warehouses_stocks")
+			tx.Rollback()
+			return nil, err
+		}
 	}
 
 	if err := tx.Commit(); err != nil {

@@ -53,6 +53,18 @@ type MasterRepository interface {
 	CreateWarehouse(ctx context.Context, req *entity.CreateWarehouseReq) (*entity.CreateWarehouseResp, error)
 	UpdateWarehouse(ctx context.Context, req *entity.UpdateWarehouseReq) error
 	DeleteWarehouse(ctx context.Context, req *entity.DeleteWarehouseReq) error
+	// WarehousesStocks
+	GetWarehousesStocks(ctx context.Context, req *entity.GetWarehousesStocksReq) (*entity.GetWarehousesStocksResp, error)
+	GetWarehousesStock(ctx context.Context, req *entity.GetWarehousesStockReq) (*entity.GetWarehousesStockResp, error)
+	CreateWarehousesStock(ctx context.Context, req *entity.CreateWarehousesStockReq) (*entity.CreateWarehousesStockResp, error)
+	UpdateWarehousesStock(ctx context.Context, req *entity.UpdateWarehousesStockReq) error
+	DeleteWarehousesStock(ctx context.Context, req *entity.DeleteWarehousesStockReq) error
+	// ContractsBc
+	GetContractsBc(ctx context.Context, req *entity.GetContractsBcReq) (*entity.GetContractsBcResp, error)
+	GetContractBc(ctx context.Context, req *entity.GetContractBcReq) (*entity.GetContractBcResp, error)
+	CreateContractBc(ctx context.Context, req *entity.CreateContractBcReq) (*entity.CreateContractBcResp, error)
+	UpdateContractBc(ctx context.Context, req *entity.UpdateContractBcReq) error
+	DeleteContractBc(ctx context.Context, req *entity.DeleteContractBcReq) error
 
 	// SaldoAwal
 	GetSaldoAwals(ctx context.Context, req *entity.GetSaldoAwalsReq) (*entity.GetSaldoAwalsResp, error)
@@ -187,6 +199,20 @@ type MasterService interface {
 	CreateWarehouse(ctx context.Context, req *entity.CreateWarehouseReq) (*entity.CreateWarehouseResp, error)
 	UpdateWarehouse(ctx context.Context, req *entity.UpdateWarehouseReq) error
 	DeleteWarehouse(ctx context.Context, req *entity.DeleteWarehouseReq) error
+
+	// WarehousesStocks
+	GetWarehousesStocks(ctx context.Context, req *entity.GetWarehousesStocksReq) (*entity.GetWarehousesStocksResp, error)
+	GetWarehousesStock(ctx context.Context, req *entity.GetWarehousesStockReq) (*entity.GetWarehousesStockResp, error)
+	CreateWarehousesStock(ctx context.Context, req *entity.CreateWarehousesStockReq) (*entity.CreateWarehousesStockResp, error)
+	UpdateWarehousesStock(ctx context.Context, req *entity.UpdateWarehousesStockReq) error
+	DeleteWarehousesStock(ctx context.Context, req *entity.DeleteWarehousesStockReq) error
+
+	// ContractsBc
+	GetContractsBc(ctx context.Context, req *entity.GetContractsBcReq) (*entity.GetContractsBcResp, error)
+	GetContractBc(ctx context.Context, req *entity.GetContractBcReq) (*entity.GetContractBcResp, error)
+	CreateContractBc(ctx context.Context, req *entity.CreateContractBcReq) (*entity.CreateContractBcResp, error)
+	UpdateContractBc(ctx context.Context, req *entity.UpdateContractBcReq) error
+	DeleteContractBc(ctx context.Context, req *entity.DeleteContractBcReq) error
 
 	// SaldoAwal
 	GetSaldoAwals(ctx context.Context, req *entity.GetSaldoAwalsReq) (*entity.GetSaldoAwalsResp, error)
