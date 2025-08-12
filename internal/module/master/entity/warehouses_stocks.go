@@ -18,6 +18,7 @@ type WarehousesStock struct {
 	NamaBarang    string `json:"nama_barang" db:"nama_barang"`
 	KodeBarang    string `json:"kode_barang" db:"kode_barang"`
 	Satuan        string `json:"satuan" db:"satuan"`
+	Kategori      string `json:"kategori" db:"kategori"`
 	Jumlah        int    `json:"jumlah" db:"jumlah"`
 }
 
@@ -61,4 +62,11 @@ type DeleteWarehousesStockReq struct {
 	UserId string `validate:"ulid"`
 
 	Id string `json:"id" validate:"required"`
+}
+
+type UpdateStockWarehousesReq struct {
+	UserId string `validate:"ulid"`
+
+	Id     string `params:"id" validate:"required"`
+	Jumlah int    `json:"jumlah" validate:"required,min=0"`
 }

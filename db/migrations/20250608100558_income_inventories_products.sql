@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS income_inventories_products (
     no_kontrak VARCHAR(26) NOT NULL,
     kode_barang VARCHAR(26) NOT NULL,
     stok_awal INTEGER NOT NULL DEFAULT 0,
-    warehouse_location VARCHAR(26) NOT NULL,
+    warehouse_location VARCHAR(26) DEFAULT NULL,
     driver VARCHAR(50) NOT NULL,
     license_plate VARCHAR(50) NOT NULL,
     bruto_weight BIGINT NOT NULL DEFAULT 0,

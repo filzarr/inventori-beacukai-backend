@@ -24,7 +24,7 @@ func (r *masterRepo) GetTransfersProducts(ctx context.Context, req *entity.GetTr
 			SELECT COUNT(*) OVER() AS total_data,
 				id,
 				kode_barang,
-				jumlah
+				jumlah, status
 			FROM transfers_products
 			WHERE deleted_at IS NULL`
 	)

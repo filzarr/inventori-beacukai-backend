@@ -3,8 +3,9 @@ package entity
 import "inventori-beacukai-backend/pkg/types"
 
 type GetIncomeInventoryProductsReq struct {
-	Q    string `query:"q" validate:"omitempty,min=3"`
-	Full bool   `query:"full" validate:"omitempty"`
+	Q        string `query:"q" validate:"omitempty,min=3"`
+	Full     bool   `query:"full" validate:"omitempty"`
+	Kategori string `query:"kategori" validate:"omitempty"`
 	types.MetaQuery
 }
 
@@ -38,19 +39,19 @@ type GetIncomeInventoryProductResp struct {
 }
 
 type CreateIncomeInventoryProductReq struct {
-	NoKontrak         string `json:"no_kontrak" validate:"required"`
-	KodeBarang        string `json:"kode_barang" validate:"required"`
-	WarehouseLocation string `json:"warehouse_location" validate:"required"`
-	Driver            string `json:"driver" validate:"required"`
-	LicensePlate      string `json:"license_plate" validate:"required"`
-	BrutoWeight       int64  `json:"bruto_weight" validate:"required"`
-	NettoWeight       int64  `json:"netto_weight" validate:"required"`
-	EmptyWeight       int64  `json:"empty_weight" validate:"required"`
-	StartingTime      string `json:"starting_time" validate:"required"`
-	EndingTime        string `json:"ending_time" validate:"required"`
-	Tanggal           string `json:"tanggal" validate:"required"`
-	SaldoAwal         int    `json:"saldo_awal" validate:"required"`
-	Jumlah            int    `json:"jumlah" validate:"min=0"`
+	NoKontrak         string  `json:"no_kontrak" validate:"required"`
+	KodeBarang        string  `json:"kode_barang" validate:"required"`
+	WarehouseLocation *string `json:"warehouse_location"`
+	Driver            string  `json:"driver" validate:"required"`
+	LicensePlate      string  `json:"license_plate" validate:"required"`
+	BrutoWeight       int64   `json:"bruto_weight" validate:"required"`
+	NettoWeight       int64   `json:"netto_weight" validate:"required"`
+	EmptyWeight       int64   `json:"empty_weight" validate:"required"`
+	StartingTime      string  `json:"starting_time" validate:"required"`
+	EndingTime        string  `json:"ending_time" validate:"required"`
+	Tanggal           string  `json:"tanggal" validate:"required"`
+	SaldoAwal         int     `json:"saldo_awal" validate:"required"`
+	Jumlah            int     `json:"jumlah" validate:"min=0"`
 }
 
 type CreateIncomeInventoryProductResp struct {

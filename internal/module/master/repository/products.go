@@ -30,7 +30,7 @@ func (r *masterRepo) GetProducts(ctx context.Context, req *entity.GetProductsReq
 				saldo_awal,
 				jumlah
 			FROM products
-			WHERE deleted_at IS NULL AND kategori != 'Barang Jadi'`
+			WHERE deleted_at IS NULL`
 	)
 
 	resp.Items = make([]entity.Product, 0)

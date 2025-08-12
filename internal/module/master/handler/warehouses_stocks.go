@@ -140,3 +140,32 @@ func (h *MasterHandler) deleteWarehousesStock(c *fiber.Ctx) error {
 	}
 	return c.JSON(response.Success(nil, ""))
 }
+
+func (h *MasterHandler) updateStockWarehouse(c *fiber.Ctx) error {
+	var (
+		req = new(entity.UpdateStockWarehousesReq)
+		v   = adapter.Adapters.Validator
+		l   = m.GetLocals(c)
+	)
+	req.UserId = l.GetUserId()
+	req.Id = c.Params("id")
+
+	if err := c.BodyParser(req); err != nil {
+		log.Warn().Err(err).Msg("handler::updateStockWarehouse - failed to parse body")
+		return c.Status(fiber.StatusBadRequest).JSON(response.Error(err))
+	}
+
+	if err := v.Validate(req); err != nil {
+		log.Warn().Err(err).Any("req", req).Msg("handler::updateStockWarehouse - invalid request")
+		code, errs := errmsg.Errors(err, req)
+		return c.Status(code).JSON(response.Error(errs))
+	}
+
+	err := h.service.UpdateStockWarehouses(c.Context(), req)
+	if err != nil {
+		code, errs := errmsg.Errors[error](err)
+		return c.Status(code).JSON(response.Error(errs))
+	}
+
+	return c.JSON(response.Success(nil, ""))
+}

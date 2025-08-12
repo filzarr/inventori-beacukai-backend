@@ -196,6 +196,10 @@ func (r *masterRepo) GetContractNotRequired(ctx context.Context, req *entity.Get
 		query += ` AND c.no_kontrak ILIKE '%' || ? || '%'`
 		args = append(args, req.Q)
 	}
+	if req.Kategori != "" {
+		query += ` AND c.kategori_kontrak = ?`
+		args = append(args, req.Kategori)
+	}
 
 	query += ` LIMIT ? OFFSET ?`
 	args = append(args, req.Paginate, (req.Page-1)*req.Paginate)

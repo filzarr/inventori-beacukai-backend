@@ -21,7 +21,7 @@ func (r *masterRepo) GetWarehousesStocks(ctx context.Context, req *entity.GetWar
 		data  = make([]dao, 0)
 		args  = make([]any, 0, 3)
 		query = `
-			SELECT COUNT(*) OVER() AS total_data, ws.id, ws.warehouse_kode, ws.kode_barang, ws.jumlah, p.nama AS nama_barang, p.satuan AS satuan
+			SELECT COUNT(*) OVER() AS total_data, ws.id, ws.warehouse_kode, ws.kode_barang, ws.jumlah, p.nama AS nama_barang, p.satuan AS satuan, p.kategori AS kategori
 			FROM warehouses_stocks ws
 			LEFT JOIN products p ON ws.kode_barang = p.kode
 			WHERE ws.deleted_at IS NULL`
@@ -114,6 +114,18 @@ func (r *masterRepo) DeleteWarehousesStock(ctx context.Context, req *entity.Dele
 
 	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), req.Id); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::DeleteWarehousesStock - failed to delete")
+		return err
+	}
+
+	return nil
+}
+
+func (r *masterRepo) UpdateStockWarehouses(ctx context.Context, req *entity.UpdateStockWarehousesReq) error {
+	query := `UPDATE warehouses_stocks SET 
+	 jumlah = jumlah + ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND deleted_at IS NULL`
+
+	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), req.Jumlah, req.Id); err != nil {
+		log.Error().Err(err).Any("req", req).Msg("repo::UpdateStockWarehouse - failed to update")
 		return err
 	}
 

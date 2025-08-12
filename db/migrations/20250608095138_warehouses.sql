@@ -3,7 +3,7 @@
 DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'kategori_gudang') THEN
-        CREATE TYPE kategori_gudang AS ENUM ('Bahan Baku', 'Bahan Penolong', 'Mesin/Sparepart', 'Barang Jadi', 'Produksi');
+        CREATE TYPE kategori_gudang AS ENUM ('Bahan Baku', 'Bahan Penolong', 'Mesin/Sparepart', 'Barang Jadi', 'Produksi', 'Penjualan');
     END IF;
 END$$;
 CREATE TABLE IF NOT EXISTS warehouses (

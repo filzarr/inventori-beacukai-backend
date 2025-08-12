@@ -51,6 +51,10 @@ func (r *masterRepo) GetIncomeInventoryProducts(ctx context.Context, req *entity
 		)`
 		args = append(args, req.Q)
 	}
+	if req.Kategori != "" {
+		query += ` AND c.kategori_kontrak = ?`
+		args = append(args, req.Kategori)
+	}
 	if req.Full {
 		query += ` AND COALESCE(iip.jumlah, 0) < cp.jumlah`
 	}

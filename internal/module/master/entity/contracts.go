@@ -5,8 +5,9 @@ import (
 )
 
 type GetContractsReq struct {
-	Q        string `query:"q" validate:"omitempty,min=3"`
-	Document bool   `query:"document"`
+	Q               string `query:"q" validate:"omitempty,min=3"`
+	Document        bool   `query:"document"`
+	KategoriKontrak string `query:"kategori_kontrak" validate:"omitempty"`
 	types.MetaQuery
 }
 
@@ -86,8 +87,9 @@ type GetTransactionsResp struct {
 }
 
 type GetContractNotRequiredReq struct {
-	Q  string `query:"q" validate:"omitempty,min=3"`
-	Bc bool   `query:"bc" validate:"omitempty"`
+	Q        string `query:"q" validate:"omitempty,min=3"`
+	Bc       bool   `query:"bc" validate:"omitempty"`
+	Kategori string `query:"kategori" validate:"omitempty"`
 	types.MetaQuery
 }
 

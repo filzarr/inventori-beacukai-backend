@@ -21,10 +21,12 @@ func (r *masterRepo) GetProductsMovement(ctx context.Context, req *entity.GetPro
 	data := []dao{}
 	args := []any{}
 	query := `
-        SELECT COUNT(*) OVER() AS total_data, pm.id, pm.kode_barang, pm.jumlah, p.nama AS nama_barang, p.satuan, w.nama AS gudang_pemohon
-        FROM products_movement pm JOIN products p ON pm.kode_barang = p.kode
+		SELECT COUNT(*) OVER() AS total_data, pm.id, pm.kode_barang, pm.jumlah, pm.status_perpindahan AS status, p.nama AS nama_barang, p.satuan, w.nama AS gudang_pemohon
+		FROM products_movement pm
+		JOIN products p ON pm.kode_barang = p.kode
+		JOIN warehouses wf ON pm.warehouses_from = wf.kode
 		JOIN warehouses w ON pm.warehouses_to = w.kode
-        WHERE pm.deleted_at IS NULL
+		WHERE pm.deleted_at IS NULL
     `
 
 	if req.Q != "" {
@@ -34,6 +36,10 @@ func (r *masterRepo) GetProductsMovement(ctx context.Context, req *entity.GetPro
 	if req.Status != "" {
 		query += ` AND pm.status_perpindahan = ?`
 		args = append(args, req.Status)
+	}
+	if req.GudangPemohon != "" {
+		query += ` AND wf.kategori = ?`
+		args = append(args, req.GudangPemohon)
 	}
 	query += ` LIMIT ? OFFSET ?`
 	args = append(args, req.Paginate, (req.Page-1)*req.Paginate)
@@ -77,12 +83,12 @@ func (r *masterRepo) CreateProductsMovement(ctx context.Context, req *entity.Cre
 
 	newID := ulid.Make().String()
 	query := `
-		INSERT INTO products_movement (id, kode_barang, jumlah, warehouses_from, warehouses_to)
-		VALUES (?, ?, ?, ?, ?)
+		INSERT INTO products_movement (id, kode_barang,no_kontrak, jumlah, warehouses_from, warehouses_to)
+		VALUES (?, ?, ?, ?, ?, ?)
 	`
 	query = r.db.Rebind(query)
 
-	_, err := r.db.ExecContext(ctx, query, newID, req.KodeBarang, req.Jumlah, req.WarehouseFrom, req.WarehouseTo)
+	_, err := r.db.ExecContext(ctx, query, newID, req.KodeBarang, req.NoKontrak, req.Jumlah, req.WarehouseFrom, req.WarehouseTo)
 	if err != nil {
 		log.Error().
 			Err(err).

@@ -5,8 +5,9 @@ import (
 )
 
 type GetProductsMovementReq struct {
-	Q      string `query:"q" validate:"omitempty,min=3"`
-	Status string `query:"status" validate:"omitempty"`
+	Q             string `query:"q" validate:"omitempty,min=3"`
+	Status        string `query:"status" validate:"omitempty"`
+	GudangPemohon string `query:"gudang" validate:"omitempty"`
 	types.MetaQuery
 }
 
@@ -20,6 +21,7 @@ type ProductsMovement struct {
 	KodeBarang    string `json:"kode_barang" db:"kode_barang"`
 	Jumlah        int    `json:"jumlah" db:"jumlah"`
 	NamaBarang    string `json:"nama_barang" db:"nama_barang"`
+	Status        string `json:"status" db:"status"`
 	Satuan        string `json:"satuan" db:"satuan"`
 }
 
@@ -39,6 +41,7 @@ type GetProductsMovementRespID struct {
 type CreateProductsMovementReq struct {
 	WarehouseFrom string `json:"warehouse_from" validate:"required"`
 	WarehouseTo   string `json:"warehouse_to" validate:"required"`
+	NoKontrak     string `json:"no_kontrak" validate:"required"`
 	KodeBarang    string `json:"kode_barang" validate:"required,min=1"`
 	Jumlah        int    `json:"jumlah" validate:"required,gt=0"`
 }

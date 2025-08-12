@@ -58,6 +58,7 @@ type MasterRepository interface {
 	GetWarehousesStock(ctx context.Context, req *entity.GetWarehousesStockReq) (*entity.GetWarehousesStockResp, error)
 	CreateWarehousesStock(ctx context.Context, req *entity.CreateWarehousesStockReq) (*entity.CreateWarehousesStockResp, error)
 	UpdateWarehousesStock(ctx context.Context, req *entity.UpdateWarehousesStockReq) error
+	UpdateStockWarehouses(ctx context.Context, req *entity.UpdateStockWarehousesReq) error
 	DeleteWarehousesStock(ctx context.Context, req *entity.DeleteWarehousesStockReq) error
 	// ContractsBc
 	GetContractsBc(ctx context.Context, req *entity.GetContractsBcReq) (*entity.GetContractsBcResp, error)
@@ -205,6 +206,7 @@ type MasterService interface {
 	GetWarehousesStock(ctx context.Context, req *entity.GetWarehousesStockReq) (*entity.GetWarehousesStockResp, error)
 	CreateWarehousesStock(ctx context.Context, req *entity.CreateWarehousesStockReq) (*entity.CreateWarehousesStockResp, error)
 	UpdateWarehousesStock(ctx context.Context, req *entity.UpdateWarehousesStockReq) error
+	UpdateStockWarehouses(ctx context.Context, req *entity.UpdateStockWarehousesReq) error
 	DeleteWarehousesStock(ctx context.Context, req *entity.DeleteWarehousesStockReq) error
 
 	// ContractsBc

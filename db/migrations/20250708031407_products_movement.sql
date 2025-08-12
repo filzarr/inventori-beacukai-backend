@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS products_movement (
     warehouses_from VARCHAR(26) NOT NULL,
     warehouses_to VARCHAR(26) NOT NULL,
     kode_barang VARCHAR(26) NOT NULL,
+    no_kontrak VARCHAR(26),
     jumlah INTEGER NOT NULL DEFAULT 0,
     status_perpindahan status_perpindahan NOT NULL DEFAULT 'Diminta',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -18,6 +19,7 @@ CREATE TABLE IF NOT EXISTS products_movement (
     deleted_at TIMESTAMP WITH TIME ZONE,
 
     FOREIGN KEY (kode_barang) REFERENCES products (kode),
+    FOREIGN KEY (no_kontrak) REFERENCES contracts (no_kontrak),
     FOREIGN KEY (warehouses_from) REFERENCES warehouses (kode),
     FOREIGN KEY (warehouses_to) REFERENCES warehouses (kode)
 );

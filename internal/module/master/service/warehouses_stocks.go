@@ -24,3 +24,7 @@ func (s *masterService) UpdateWarehousesStock(ctx context.Context, req *entity.U
 func (s *masterService) DeleteWarehousesStock(ctx context.Context, req *entity.DeleteWarehousesStockReq) error {
 	return s.repo.DeleteWarehousesStock(ctx, req)
 }
+
+func (s *masterService) UpdateStockWarehouses(ctx context.Context, req *entity.UpdateStockWarehousesReq) error {
+	return s.repo.UpdateStockWarehouses(ctx, req)
+}
