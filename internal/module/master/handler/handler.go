@@ -152,6 +152,8 @@ func (h *MasterHandler) Register(router fiber.Router) {
 	// laporan
 	router.Get("/laporan-mutasi", h.getLaporanMutasi)
 	router.Get("/laporan-mutasi/pemasukan", h.getLaporanMutasiPemasukan)
+	router.Get("/laporan-wip", m.AuthBearer, h.getLaporanWIP)
+	router.Get("/laporan-mutasi-jenis-dokumen", m.AuthBearer, h.getLaporanMutasiJenisDokumen)
 
 	// productions
 	router.Get("/productions", h.getProductions)

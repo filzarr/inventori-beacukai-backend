@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS contracts_bc (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
     deleted_at TIMESTAMP WITH TIME ZONE,
 
+    CONSTRAINT nomor_document_bc_unique UNIQUE (nomor_document_bc), 
     FOREIGN KEY (no_kontrak) REFERENCES contracts (no_kontrak),
     FOREIGN KEY (kode_document_bc) REFERENCES bc_documents (kode_document) 
 );

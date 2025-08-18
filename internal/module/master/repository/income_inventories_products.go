@@ -152,6 +152,7 @@ func (r *masterRepo) CreateIncomeInventoryProduct(ctx context.Context, req *enti
 			id,
 			no_kontrak,
 			kode_barang,
+			nomor_document_bc,
 			warehouse_location,
 			driver,
 			license_plate,
@@ -163,11 +164,12 @@ func (r *masterRepo) CreateIncomeInventoryProduct(ctx context.Context, req *enti
 			stok_awal,
 			jumlah,
 			tanggal
-		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`
 	_, err = tx.ExecContext(ctx, tx.Rebind(query), Id,
 		req.NoKontrak,
 		req.KodeBarang,
+		req.NomorDocumentBc,
 		req.WarehouseLocation,
 		req.Driver,
 		req.LicensePlate,

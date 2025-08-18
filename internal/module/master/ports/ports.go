@@ -135,6 +135,8 @@ type MasterRepository interface {
 	// Laporan
 	GetLaporanMutasi(ctx context.Context, req *entity.GetLaporanMutasiReq) (*entity.GetLaporanMutasiResp, error)
 	GetLaporanMutasiPemasukan(ctx context.Context, req *entity.GetLaporanMutasiPemasukanReq) (*entity.GetLaporanMutasiPemasukanResp, error)
+	GetLaporanMutasiWip(ctx context.Context, req *entity.GetLaporanMutasiWipReq) (*entity.GetLaporanMutasiWipResp, error)
+	GetLaporanMutasiJenisDokumen(ctx context.Context, req *entity.GetLaporanMutasiJenisDokumenReq) (*entity.GetLaporanMutasiJenisDokumenResp, error)
 
 	// Productions
 	GetProductions(ctx context.Context, req *entity.GetProductionsReq) (*entity.GetProductionsResp, error)
@@ -284,6 +286,8 @@ type MasterService interface {
 	// Laporan
 	GetLaporanMutasi(ctx context.Context, req *entity.GetLaporanMutasiReq) (*entity.GetLaporanMutasiResp, error)
 	GetLaporanMutasiPemasukan(ctx context.Context, req *entity.GetLaporanMutasiPemasukanReq) (*entity.GetLaporanMutasiPemasukanResp, error)
+	GetLaporanMutasiWip(ctx context.Context, req *entity.GetLaporanMutasiWipReq) (*entity.GetLaporanMutasiWipResp, error)
+	GetLaporanMutasiJenisDokumen(ctx context.Context, req *entity.GetLaporanMutasiJenisDokumenReq) (*entity.GetLaporanMutasiJenisDokumenResp, error)
 
 	// Productions
 	GetProductions(ctx context.Context, req *entity.GetProductionsReq) (*entity.GetProductionsResp, error)

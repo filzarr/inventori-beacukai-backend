@@ -3,7 +3,8 @@ package entity
 import "inventori-beacukai-backend/pkg/types"
 
 type GetContractsBcReq struct {
-	Q string `query:"q" validate:"omitempty,min=3"`
+	Q         string `query:"q" validate:"omitempty,min=3"`
+	NoKontrak string `query:"no_kontrak" validate:"omitempty"`
 	types.MetaQuery
 }
 

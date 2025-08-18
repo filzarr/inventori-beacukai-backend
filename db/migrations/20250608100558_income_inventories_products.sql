@@ -3,6 +3,7 @@
 CREATE TABLE IF NOT EXISTS income_inventories_products (
     id CHAR(26) PRIMARY KEY,
     no_kontrak VARCHAR(26) NOT NULL,
+    nomor_document_bc VARCHAR(26) NOT NULL,
     kode_barang VARCHAR(26) NOT NULL,
     stok_awal INTEGER NOT NULL DEFAULT 0,
     warehouse_location VARCHAR(26) DEFAULT NULL,
@@ -19,8 +20,10 @@ CREATE TABLE IF NOT EXISTS income_inventories_products (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
     deleted_at TIMESTAMP WITH TIME ZONE,
 
+
     FOREIGN KEY (warehouse_location) REFERENCES warehouses (kode),
     FOREIGN KEY (no_kontrak) REFERENCES contracts (no_kontrak),
+    FOREIGN KEY (nomor_document_bc) REFERENCES contracts_bc (nomor_document_bc),
     FOREIGN KEY (kode_barang) REFERENCES products (kode)
 );
 -- +goose StatementEnd

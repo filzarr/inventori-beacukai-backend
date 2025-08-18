@@ -42,6 +42,7 @@ type CreateIncomeInventoryProductReq struct {
 	NoKontrak         string  `json:"no_kontrak" validate:"required"`
 	KodeBarang        string  `json:"kode_barang" validate:"required"`
 	WarehouseLocation *string `json:"warehouse_location"`
+	NomorDocumentBc   string  `json:"nomor_document_bc" validate:"required"`
 	Driver            string  `json:"driver" validate:"required"`
 	LicensePlate      string  `json:"license_plate" validate:"required"`
 	BrutoWeight       int64   `json:"bruto_weight" validate:"required"`
