@@ -198,7 +198,7 @@ func (r *masterRepo) GetLaporanMutasiJenisDokumen(ctx context.Context, req *enti
 				WHERE cb.deleted_at IS NULL
 
 	`
-	//
+
 	if req.Q != "" {
 		query += ` AND cb.no_kontrak ILIKE '%' || ? || '%'
 		`
