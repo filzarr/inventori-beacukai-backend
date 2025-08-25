@@ -72,7 +72,7 @@ func (r *dashboardRepo) GetTotalPenjualan(ctx context.Context, req *entity.GetTo
 	)
 	query := `
 		SELECT 
-			SUM(cp.jumlah * cp.nilai_barang_rp) AS total
+			COALESCE(SUM(cp.jumlah * cp.nilai_barang_rp),0) AS total
 		FROM contract_products cp
 		LEFT JOIN contracts c ON cp.no_kontrak = c.no_kontrak
 		WHERE EXISTS (
@@ -102,7 +102,7 @@ func (r *dashboardRepo) GetTotalPembelian(ctx context.Context, req *entity.GetTo
 	)
 	query := `
 		SELECT 
-			SUM(cp.jumlah * cp.nilai_barang_rp) AS total
+			COALESCE(SUM(cp.jumlah * cp.nilai_barang_rp),0) AS total
 		FROM contract_products cp
 		LEFT JOIN contracts c ON cp.no_kontrak = c.no_kontrak
 		WHERE EXISTS (
