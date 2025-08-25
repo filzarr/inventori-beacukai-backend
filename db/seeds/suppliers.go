@@ -37,8 +37,8 @@ func (s *Seed) suppliersSeed() {
 	}()
 
 	_, err = tx.NamedExec(`
-		INSERT INTO supliers (id, name, alamat, npwp)
-		VALUES (:id, :name, :alamat, :npwp)
+		INSERT INTO supliers (id, name, kategori_supliers, alamat, npwp)
+		VALUES (:id, :name, 'Penjual' ,:alamat, :npwp)
 	`, supplierMaps)
 	if err != nil {
 		log.Error().Err(err).Msg("Error creating suppliers")

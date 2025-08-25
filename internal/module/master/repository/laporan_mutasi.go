@@ -27,7 +27,6 @@ func (r *masterRepo) GetLaporanMutasi(ctx context.Context, req *entity.GetLapora
 		LEFT JOIN income_inventories_products iip ON p.kode = iip.kode_barang
 	`
 
-	// Menyusun kondisi WHERE
 	conditions := make([]string, 0)
 	if req.Kategori != "" {
 		conditions = append(conditions, "p.kategori = ?")
@@ -39,17 +38,14 @@ func (r *masterRepo) GetLaporanMutasi(ctx context.Context, req *entity.GetLapora
 		args = append(args, q, q)
 	}
 
-	// Gabungkan kondisi WHERE jika ada
 	if len(conditions) > 0 {
 		query += " WHERE " + strings.Join(conditions, " AND ")
 	}
 
-	// Group by semua kolom non-agregat
 	query += `
 		GROUP BY p.id, p.kode, p.nama, p.saldo_awal, p.jumlah
 	`
 
-	// Eksekusi query
 	if err := r.db.SelectContext(ctx, &data, r.db.Rebind(query), args...); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::GetLaporanMutasi - failed to query")
 		return nil, err
@@ -171,10 +167,12 @@ func (r *masterRepo) GetLaporanMutasiJenisDokumen(ctx context.Context, req *enti
 			COUNT(*) OVER() AS total_data,
 			cb.id, 
 			cb.no_kontrak, 
+			
 			cb.kode_document_bc AS kode_document, 
 			cb.nomor_document_bc AS nomor_document, 
 			cb.tanggal_document_bc AS tanggal_document, 
 			s.name AS pemasok, 
+			bc.kategori AS kategori_document,
 			COALESCE(
 				json_agg(
 					json_build_object(
@@ -188,6 +186,7 @@ func (r *masterRepo) GetLaporanMutasiJenisDokumen(ctx context.Context, req *enti
 				'[]'
 			) AS barang
 			FROM contracts_bc cb
+			LEFT JOIN bc_documents bc ON cb.kode_document_bc = bc.kode_document
 			LEFT JOIN contracts c ON cb.no_kontrak = c.no_kontrak
 			LEFT JOIN supliers s ON s.id = c.supliers_id  
 			LEFT JOIN income_inventories_products iip ON iip.nomor_document_bc = cb.nomor_document_bc
@@ -201,10 +200,27 @@ func (r *masterRepo) GetLaporanMutasiJenisDokumen(ctx context.Context, req *enti
 
 	if req.Q != "" {
 		query += ` AND cb.no_kontrak ILIKE '%' || ? || '%'
+			OR s.name ILIKE '%' || ? || '%'
 		`
-		args = append(args, req.Q)
+		args = append(args, req.Q, req.Q)
 	}
-	query += ` GROUP BY cb.id, cb.no_kontrak, cb.kode_document_bc, cb.tanggal_document_bc, s.name`
+	log.Info().Msg(req.KategoriBc)
+	if req.StartDate != "" {
+		query += ` AND cb.tanggal_document_bc >= ? `
+		args = append(args, req.StartDate)
+	}
+
+	if req.EndDate != "" {
+		query += ` AND cb.tanggal_document_bc <= ?`
+		args = append(args, req.EndDate)
+	}
+
+	if req.KategoriBc != "" {
+		query += ` AND bc.kategori = ?`
+		args = append(args, req.KategoriBc)
+	}
+
+	query += ` GROUP BY cb.id, cb.no_kontrak, cb.kode_document_bc, cb.tanggal_document_bc, s.name, bc.kategori`
 	query += ` LIMIT ? OFFSET ?`
 	args = append(args, req.Paginate, (req.Page-1)*req.Paginate)
 

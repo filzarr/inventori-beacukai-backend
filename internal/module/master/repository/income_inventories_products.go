@@ -166,11 +166,19 @@ func (r *masterRepo) CreateIncomeInventoryProduct(ctx context.Context, req *enti
 			tanggal
 		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`
+	// Handle NULL warehouse_location
+	var warehouseLocation interface{}
+	if req.WarehouseLocation != nil {
+		warehouseLocation = *req.WarehouseLocation
+	} else {
+		warehouseLocation = nil
+	}
+
 	_, err = tx.ExecContext(ctx, tx.Rebind(query), Id,
 		req.NoKontrak,
 		req.KodeBarang,
 		req.NomorDocumentBc,
-		req.WarehouseLocation,
+		warehouseLocation,
 		req.Driver,
 		req.LicensePlate,
 		req.BrutoWeight,
@@ -187,55 +195,58 @@ func (r *masterRepo) CreateIncomeInventoryProduct(ctx context.Context, req *enti
 		return nil, err
 	}
 
-	var wsCount int
-	checkWSQuery := `
-		SELECT COUNT(*) 
-		FROM warehouses_stocks 
-		WHERE warehouse_kode = ? 
-		  AND kode_barang = ? 
-		  AND deleted_at IS NULL
-	`
-	if err := tx.GetContext(ctx, &wsCount, tx.Rebind(checkWSQuery), req.WarehouseLocation, req.KodeBarang); err != nil {
-		log.Error().Err(err).Msg("repo::CreateIncomeInventoryProduct - failed to check warehouses_stocks")
-		tx.Rollback()
-		return nil, err
-	}
-
-	if wsCount == 0 {
-		wsID := ulid.Make().String()
-		insertWSQuery := `
-			INSERT INTO warehouses_stocks (
-				id,
-				warehouse_kode,
-				kode_barang,
-				jumlah
-			) VALUES (?, ?, ?, ?)
+	// Only update warehouse stocks if warehouse_location is provided
+	if req.WarehouseLocation != nil {
+		var wsCount int
+		checkWSQuery := `
+			SELECT COUNT(*) 
+			FROM warehouses_stocks 
+			WHERE warehouse_kode = ? 
+			  AND kode_barang = ? 
+			  AND deleted_at IS NULL
 		`
-		if _, err := tx.ExecContext(ctx, tx.Rebind(insertWSQuery),
-			wsID,
-			req.WarehouseLocation,
-			req.KodeBarang,
-			req.Jumlah,
-		); err != nil {
-			log.Error().Err(err).Msg("repo::CreateIncomeInventoryProduct - failed to insert warehouses_stocks")
+		if err := tx.GetContext(ctx, &wsCount, tx.Rebind(checkWSQuery), *req.WarehouseLocation, req.KodeBarang); err != nil {
+			log.Error().Err(err).Msg("repo::CreateIncomeInventoryProduct - failed to check warehouses_stocks")
 			tx.Rollback()
 			return nil, err
 		}
-	} else {
-		updateWSQuery := `
-			UPDATE warehouses_stocks
-			SET jumlah = jumlah + ?, updated_at = CURRENT_TIMESTAMP
-			WHERE warehouse_kode = ? 
-			  AND kode_barang = ?
-		`
-		if _, err := tx.ExecContext(ctx, tx.Rebind(updateWSQuery),
-			req.Jumlah,
-			req.WarehouseLocation,
-			req.KodeBarang,
-		); err != nil {
-			log.Error().Err(err).Msg("repo::CreateIncomeInventoryProduct - failed to update warehouses_stocks")
-			tx.Rollback()
-			return nil, err
+
+		if wsCount == 0 {
+			wsID := ulid.Make().String()
+			insertWSQuery := `
+				INSERT INTO warehouses_stocks (
+					id,
+					warehouse_kode,
+					kode_barang,
+					jumlah
+				) VALUES (?, ?, ?, ?)
+			`
+			if _, err := tx.ExecContext(ctx, tx.Rebind(insertWSQuery),
+				wsID,
+				*req.WarehouseLocation,
+				req.KodeBarang,
+				req.Jumlah,
+			); err != nil {
+				log.Error().Err(err).Msg("repo::CreateIncomeInventoryProduct - failed to insert warehouses_stocks")
+				tx.Rollback()
+				return nil, err
+			}
+		} else {
+			updateWSQuery := `
+				UPDATE warehouses_stocks
+				SET jumlah = jumlah + ?, updated_at = CURRENT_TIMESTAMP
+				WHERE warehouse_kode = ? 
+				  AND kode_barang = ?
+			`
+			if _, err := tx.ExecContext(ctx, tx.Rebind(updateWSQuery),
+				req.Jumlah,
+				*req.WarehouseLocation,
+				req.KodeBarang,
+			); err != nil {
+				log.Error().Err(err).Msg("repo::CreateIncomeInventoryProduct - failed to update warehouses_stocks")
+				tx.Rollback()
+				return nil, err
+			}
 		}
 	}
 
@@ -359,7 +370,6 @@ func (r *masterRepo) GetIncomeInventoryProductsByContractAndKode(ctx context.Con
 			AND iip.kode_barang = ?
 			AND iip.deleted_at IS NULL
 	`
-
 	if err := r.db.SelectContext(ctx, &data, r.db.Rebind(query), req.NoKontrak, req.KodeBarang); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::GetIncomeInventoryProductByContractAndKode - failed to query")
 		return nil, err

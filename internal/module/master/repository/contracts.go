@@ -32,7 +32,10 @@ func (r *masterRepo) GetContracts(ctx context.Context, req *entity.GetContractsR
 		query += ` AND c.no_kontrak ILIKE '%' || ? || '%'`
 		args = append(args, req.Q)
 	}
-
+	if req.KategoriKontrak != "" {
+		query += ` AND c.kategori_kontrak = ?`
+		args = append(args, req.KategoriKontrak)
+	}
 	query += ` LIMIT ? OFFSET ?`
 	args = append(args, req.Paginate, (req.Page-1)*req.Paginate)
 

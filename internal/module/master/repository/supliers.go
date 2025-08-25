@@ -88,15 +88,16 @@ func (r *masterRepo) CreateSuplier(ctx context.Context, req *entity.CreateSuplie
 			id,
 			name,
 			alamat,
+			kategori_supliers
 			npwp
-		) VALUES (?, ?, ?, ?)`
+		) VALUES (?, ?, ?, ?, ?)`
 
 	var (
 		id   = ulid.Make().String()
 		resp = new(entity.CreateSuplierResp)
 	)
 
-	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), id, req.Name, req.Alamat, req.Npwp); err != nil {
+	if _, err := r.db.ExecContext(ctx, r.db.Rebind(query), id, req.Name, req.Alamat, req.Kategori, req.Npwp); err != nil {
 		log.Error().Err(err).Any("req", req).Msg("repo::CreateSuplier - failed to insert suplier")
 		return nil, err
 	}

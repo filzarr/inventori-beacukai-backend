@@ -34,11 +34,11 @@ func (h *MasterHandler) Register(router fiber.Router) {
 	router.Delete("/supliers/:id", h.deleteSuplier)
 
 	// products
-	router.Get("/products", h.getProducts)
-	router.Get("/products/:id", h.getProduct)
-	router.Post("/products", h.createProduct)
-	router.Put("/products/:id", h.updateProduct)
-	router.Delete("/products/:id", h.deleteProduct)
+	router.Get("/products", m.AuthBearer, h.getProducts)
+	router.Get("/products/:id", m.AuthBearer, h.getProduct)
+	router.Post("/products", m.AuthBearer, h.createProduct)
+	router.Put("/products/:id", m.AuthBearer, h.updateProduct)
+	router.Delete("/products/:id", m.AuthBearer, h.deleteProduct)
 
 	// currencies
 	router.Get("/currencies", h.getCurrencies)

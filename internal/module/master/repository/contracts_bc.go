@@ -21,20 +21,31 @@ func (r *masterRepo) GetContractsBc(ctx context.Context, req *entity.GetContract
 		data  = make([]dao, 0)
 		args  = make([]any, 0, 3)
 		query = `
-			SELECT COUNT(*) OVER() AS total_data, id, no_kontrak, kode_document_bc, tanggal_document_bc, nomor_document_bc
-			FROM contracts_bc
-			WHERE deleted_at IS NULL`
+			SELECT COUNT(*) OVER() AS total_data, bc.id, bc.no_kontrak, bc.kode_document_bc, bc.tanggal_document_bc, bc.nomor_document_bc
+			FROM contracts_bc bc
+			LEFT JOIN contracts c ON bc.no_kontrak = c.no_kontrak
+			WHERE bc.deleted_at IS NULL`
 	)
 
 	resp.Items = make([]entity.ContractsBc, 0)
 
 	if req.Q != "" {
 		query += ` AND (
-			no_kontrak ILIKE '%' || ? || '%' OR
-			kode_document_bc ILIKE '%' || ? || '%' OR
-			kode_mata_uang ILIKE '%' || ? || '%'
+			bc.no_kontrak ILIKE '%' || ? || '%' OR
+			bc.kode_document_bc ILIKE '%' || ? || '%' OR
+			bc.kode_mata_uang ILIKE '%' || ? || '%'
 		)`
 		args = append(args, req.Q, req.Q, req.Q)
+	}
+
+	if req.NoKontrak != "" {
+		query += ` AND bc.no_kontrak = ?`
+		args = append(args, req.NoKontrak)
+	}
+
+	if req.KategoriKontrak != "" {
+		query += ` AND c.kategori_kontrak = ?`
+		args = append(args, req.KategoriKontrak)
 	}
 
 	query += ` LIMIT ? OFFSET ?`

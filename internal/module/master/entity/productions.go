@@ -5,7 +5,7 @@ import (
 )
 
 type GetProductionsReq struct {
-	Q string `query:"q" validate:"omitempty,min=3"`
+	Q string `query:"q" validate:"omitempty"`
 	types.MetaQuery
 }
 

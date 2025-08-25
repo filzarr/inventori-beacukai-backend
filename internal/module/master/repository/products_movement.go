@@ -87,8 +87,14 @@ func (r *masterRepo) CreateProductsMovement(ctx context.Context, req *entity.Cre
 		VALUES (?, ?, ?, ?, ?, ?)
 	`
 	query = r.db.Rebind(query)
+	var noKontrak interface{}
+	if req.NoKontrak == "" {
+		noKontrak = nil
+	} else {
+		noKontrak = req.NoKontrak
+	}
 
-	_, err := r.db.ExecContext(ctx, query, newID, req.KodeBarang, req.NoKontrak, req.Jumlah, req.WarehouseFrom, req.WarehouseTo)
+	_, err := r.db.ExecContext(ctx, query, newID, req.KodeBarang, noKontrak, req.Jumlah, req.WarehouseFrom, req.WarehouseTo)
 	if err != nil {
 		log.Error().
 			Err(err).

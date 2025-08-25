@@ -3,7 +3,8 @@ package entity
 import "inventori-beacukai-backend/pkg/types"
 
 type GetSupliersReq struct {
-	Q string `query:"q" validate:"omitempty,min=3"`
+	Q        string `query:"q" validate:"omitempty"`
+	Kategori string `query:"kategori"`
 	types.MetaQuery
 }
 
@@ -32,9 +33,10 @@ type GetSuplierResp struct {
 }
 
 type CreateSuplierReq struct {
-	Name   string `json:"name" validate:"required,min=3"`
-	Alamat string `json:"alamat" validate:"required,min=5"`
-	Npwp   string `json:"npwp" validate:"required"`
+	Name     string `json:"name" validate:"required,min=3"`
+	Alamat   string `json:"alamat" validate:"required,min=5"`
+	Kategori string `json:"kategori" validate:"required"`
+	Npwp     string `json:"npwp" validate:"required"`
 }
 
 type CreateSuplierResp struct {

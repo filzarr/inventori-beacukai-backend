@@ -3,7 +3,7 @@ package entity
 import "inventori-beacukai-backend/pkg/types"
 
 type GetIncomeInventoryProductsReq struct {
-	Q        string `query:"q" validate:"omitempty,min=3"`
+	Q        string `query:"q" validate:"omitempty"`
 	Full     bool   `query:"full" validate:"omitempty"`
 	Kategori string `query:"kategori" validate:"omitempty"`
 	types.MetaQuery

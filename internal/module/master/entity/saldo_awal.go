@@ -3,7 +3,7 @@ package entity
 import "inventori-beacukai-backend/pkg/types"
 
 type GetSaldoAwalsReq struct {
-	Q string `query:"q" validate:"omitempty,min=3"`
+	Q string `query:"q" validate:"omitempty"`
 	types.MetaQuery
 }
 

@@ -1,6 +1,8 @@
 package middleware
 
 import (
+	"fmt"
+	"inventori-beacukai-backend/internal/adapter"
 	"inventori-beacukai-backend/pkg/jwthandler"
 
 	"github.com/gofiber/fiber/v2"
@@ -34,7 +36,14 @@ func AuthBearer(c *fiber.Ctx) error {
 
 	c.Locals("user_id", claims.UserId)
 	c.Locals("role", claims.Role)
-
+	if claims.UserId != "" {
+		query := fmt.Sprintf("SET app.user_id = '%s'", claims.UserId)
+		_, err := adapter.Adapters.Postgres.Exec(query)
+		if err != nil {
+			log.Error().Err(err).Msg("middleware::AuthBearer - gagal SET app.user_id")
+			return fiber.ErrInternalServerError
+		}
+	}
 	// If the token is valid, pass the request to the next handler
 	return c.Next()
 }

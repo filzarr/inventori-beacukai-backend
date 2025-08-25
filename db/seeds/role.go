@@ -9,13 +9,16 @@ import (
 // rolesSeed seeds the roles table.
 func (s *Seed) rolesSeed() {
 	roleMaps := []map[string]any{
-		{"id": "01J3X0H3TK5MWPXK9D8GDRFZY9", "name": "SuperAdmin"},
 		{"id": "01J3X0H3TK5MWPXK9D8GDRFZYA", "name": "Admin"},
-		{"id": "01J3X0H3TK5MWPXK9D8GDRFZYB", "name": "Gudang Produksi"},
+		{"id": "01J3X0H3TK5MWPXK9D8GDRFZYB", "name": "Gudang Bahan Baku"},
+		{"id": "01J3X0H3TK5MWPXK9D8GDRFZYK", "name": "Gudang Bahan Penolong"},
 		{"id": "01J3X0H3TK5MWPXK9D8GDRFZYC", "name": "Gudang Mesin"},
 		{"id": "01J3X0H3TK5MWPXK9D8GDRFZYD", "name": "Produksi"},
-		{"id": "01J3X0H3TK5MWPXK9D8GDRFZYE", "name": "Gudang Barang Jadi"},
 		{"id": "01J3X0H3TK5MWPXK9D8GDRFZYF", "name": "Guest"},
+		{"id": "01J3X0H3TK5MWPXK9D8GDRFZYG", "name": "Exim"},
+		{"id": "01J3X0H3TK5MWPXK9D8GDRFZYH", "name": "Accounting"},
+		{"id": "01J3X0H3TK5MWPXK9D8GDRFZYI", "name": "Timbangan"},
+		{"id": "01J3X0H3TK5MWPXK9D8GDRFZYJ", "name": "Beacukai"},
 	}
 
 	tx, err := s.db.BeginTxx(context.Background(), nil)

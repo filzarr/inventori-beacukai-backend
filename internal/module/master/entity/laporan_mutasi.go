@@ -7,7 +7,7 @@ import (
 )
 
 type GetLaporanMutasiReq struct {
-	Q        string `query:"q" validate:"omitempty,min=3"`
+	Q        string `query:"q" validate:"omitempty"`
 	Kategori string `query:"kategori" validate:"omitempty"`
 	types.MetaQuery
 }
@@ -32,7 +32,7 @@ type GetLaporanMutasiResp struct {
 }
 
 type GetLaporanMutasiPemasukanReq struct {
-	Q          string `query:"q" validate:"omitempty,min=3"`
+	Q          string `query:"q" validate:"omitempty"`
 	KodeBarang string `query:"kode_barang"`
 	types.MetaQuery
 }
@@ -65,7 +65,7 @@ type LaporanMutasiWip struct {
 	Jumlah     int    `json:"jumlah" db:"jumlah"`
 }
 type GetLaporanMutasiWipReq struct {
-	Q      string `query:"q" validate:"omitempty,min=3"`
+	Q      string `query:"q" validate:"omitempty"`
 	UserId string `json:"user_id"`
 	types.MetaQuery
 }
@@ -93,18 +93,22 @@ func (b *BarangList) Scan(value interface{}) error {
 }
 
 type LaporanMutasiJenisDokumen struct {
-	Id              string     `json:"id" db:"id"`
-	KodeDocument    string     `json:"kode_document" db:"kode_document"`
-	NomorDocument   string     `json:"nomor_document" db:"nomor_document"`
-	TanggalDocument string     `json:"tanggal_document" db:"tanggal_document"`
-	Pemasok         string     `json:"pemasok" db:"pemasok"`
-	Barang          BarangList `json:"barang" db:"barang"`
-	NoKontrak       string     `json:"no_kontrak" db:"no_kontrak"`
+	Id               string     `json:"id" db:"id"`
+	KategoriDocument string     `json:"kategori_document" db:"kategori_document"`
+	KodeDocument     string     `json:"kode_document" db:"kode_document"`
+	NomorDocument    string     `json:"nomor_document" db:"nomor_document"`
+	TanggalDocument  string     `json:"tanggal_document" db:"tanggal_document"`
+	Pemasok          string     `json:"pemasok" db:"pemasok"`
+	Barang           BarangList `json:"barang" db:"barang"`
+	NoKontrak        string     `json:"no_kontrak" db:"no_kontrak"`
 }
 
 type GetLaporanMutasiJenisDokumenReq struct {
-	Q      string `query:"q" validate:"omitempty,min=3"`
-	UserId string `json:"user_id"`
+	Q          string `query:"q" validate:"omitempty"`
+	UserId     string `json:"user_id"`
+	StartDate  string `query:"start_date" validate:"omitempty"`
+	EndDate    string `query:"end_date" validate:"omitempty"`
+	KategoriBc string `query:"kategori_bc" validate:"omitempty"`
 	types.MetaQuery
 }
 
