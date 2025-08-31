@@ -72,3 +72,23 @@ type TotalProductMovementNotProcess struct {
 type GetTotalProductMovementNotProcessResp struct {
 	TotalProductMovementNotProcess
 }
+
+type GetTotalStockMiminumReq struct {
+	UserId string `json:"user_id"`
+	Q      string `query:"q" validate:"omitempty"`
+	types.MetaQuery
+}
+
+func (r *GetTotalStockMiminumReq) SetDefault() {
+	r.MetaQuery.SetDefault()
+}
+
+type TotalStockMiminum struct {
+	KodeBarang string `json:"kode_barang" db:"kode_barang"`
+	NamaBarang string `json:"nama_barang" db:"nama_barang"`
+	Total      int    `json:"total" db:"total"`
+}
+type GetTotalStockMiminumResp struct {
+	Items []TotalStockMiminum `json:"items"`
+	Meta  types.Meta          `json:"meta"`
+}

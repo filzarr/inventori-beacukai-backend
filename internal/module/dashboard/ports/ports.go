@@ -11,6 +11,7 @@ type DashboardRepository interface {
 	GetTotalPembelian(ctx context.Context, req *entity.GetTotalPembelianReq) (*entity.GetTotalPembelianResp, error)
 	GetTotalWipToday(ctx context.Context, req *entity.GetTotalWipTodayReq) (*entity.GetTotalWipTodayResp, error)
 	GetTotalProductMovementNotProcess(ctx context.Context, req *entity.GetTotalProductMovementNotProcessReq) (*entity.GetTotalProductMovementNotProcessResp, error)
+	GetTotalStockMiminum(ctx context.Context, req *entity.GetTotalStockMiminumReq) (*entity.GetTotalStockMiminumResp, error)
 }
 
 type DashboardService interface {
@@ -19,4 +20,5 @@ type DashboardService interface {
 	GetTotalPembelian(ctx context.Context, req *entity.GetTotalPembelianReq) (*entity.GetTotalPembelianResp, error)
 	GetTotalWipToday(ctx context.Context, req *entity.GetTotalWipTodayReq) (*entity.GetTotalWipTodayResp, error)
 	GetTotalProductMovementNotProcess(ctx context.Context, req *entity.GetTotalProductMovementNotProcessReq) (*entity.GetTotalProductMovementNotProcessResp, error)
+	GetTotalStockMiminum(ctx context.Context, req *entity.GetTotalStockMiminumReq) (*entity.GetTotalStockMiminumResp, error)
 }

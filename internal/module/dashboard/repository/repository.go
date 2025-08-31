@@ -180,3 +180,56 @@ func (r *dashboardRepo) GetTotalProductMovementNotProcess(ctx context.Context, r
 	resp.TotalProductMovementNotProcess = *data
 	return resp, nil
 }
+
+func (r *dashboardRepo) GetTotalStockMiminum(ctx context.Context, req *entity.GetTotalStockMiminumReq) (*entity.GetTotalStockMiminumResp, error) {
+	type dao struct {
+		TotalData int `db:"total_data"`
+		entity.TotalStockMiminum
+	}
+
+	var (
+		resp  = new(entity.GetTotalStockMiminumResp)
+		data  = make([]dao, 0)
+		args  = make([]any, 0, 3)
+		query = `
+		SELECT 
+			COUNT(*) OVER() AS total_data,
+			p.kode AS kode_barang,
+			p.nama AS nama_barang, 
+			COALESCE(SUM(ws.jumlah), 0) AS total
+		FROM products p
+		LEFT JOIN warehouses_stocks ws 
+			ON p.kode = ws.kode_barang 
+			AND ws.deleted_at IS NULL
+		LEFT JOIN warehouses w
+			ON ws.warehouse_kode = w.kode
+			AND w.kategori NOT IN ('Produksi', 'Penjualan')
+			AND w.deleted_at IS NULL
+		WHERE p.deleted_at IS NULL
+		GROUP BY p.kode, p.nama, p.satuan, p.kategori
+		HAVING COALESCE(SUM(ws.jumlah), 0) < 50
+		ORDER BY p.nama ASC
+		LIMIT ? OFFSET ?`
+	)
+
+	args = append(args, req.Paginate, (req.Page-1)*req.Paginate)
+
+	if err := r.db.SelectContext(ctx, &data, r.db.Rebind(query), args...); err != nil {
+		log.Error().Err(err).Any("req", req).Msg("repo::GetTotalStockMinimum - failed to query")
+		return nil, err
+	}
+
+	resp.Items = make([]entity.TotalStockMiminum, 0, len(data))
+
+	if len(data) > 0 {
+		resp.Meta.TotalData = data[0].TotalData
+	}
+
+	for _, d := range data {
+		resp.Items = append(resp.Items, d.TotalStockMiminum)
+	}
+
+	resp.Meta.CountTotalPage(req.Page, req.Paginate, resp.Meta.TotalData)
+	return resp, nil
+
+}

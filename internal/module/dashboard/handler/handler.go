@@ -36,6 +36,7 @@ func (h *DashboardHandler) Register(router fiber.Router) {
 	router.Get("/total-pembelian", m.AuthBearer, h.getTotalPembelian)
 	router.Get("/total-wip", m.AuthBearer, h.getTotalWipToday)
 	router.Get("/total-product-movement-not-progress", m.AuthBearer, h.getTotalProductMovementNotProcess)
+	router.Get("/stock-minimum", m.AuthBearer, h.getTotalStockMiminum)
 }
 
 func (h *DashboardHandler) getDashboardChart(c *fiber.Ctx) error {
@@ -150,6 +151,34 @@ func (h *DashboardHandler) getTotalProductMovementNotProcess(c *fiber.Ctx) error
 	}
 
 	resp, err := h.service.GetTotalProductMovementNotProcess(c.Context(), req)
+	if err != nil {
+		code, errs := errmsg.Errors[error](err)
+		return c.Status(code).JSON(response.Error(errs))
+	}
+
+	return c.JSON(response.Success(resp, ""))
+}
+
+func (h *DashboardHandler) getTotalStockMiminum(c *fiber.Ctx) error {
+	var (
+		req = new(entity.GetTotalStockMiminumReq)
+		v   = adapter.Adapters.Validator
+		l   = m.GetLocals(c)
+	)
+	req.UserId = l.GetUserId()
+	if err := c.QueryParser(req); err != nil {
+		log.Warn().Err(err).Msg("handler::getTotalStockMiminum - failed to parse request")
+		return c.Status(fiber.StatusBadRequest).JSON(response.Error(err))
+	}
+
+	req.SetDefault()
+	if err := v.Validate(req); err != nil {
+		log.Warn().Err(err).Any("req", req).Msg("handler::GetTotalStockMinimum - invalid request")
+		code, errs := errmsg.Errors(err, req)
+		return c.Status(code).JSON(response.Error(errs))
+	}
+
+	resp, err := h.service.GetTotalStockMiminum(c.Context(), req)
 	if err != nil {
 		code, errs := errmsg.Errors[error](err)
 		return c.Status(code).JSON(response.Error(errs))

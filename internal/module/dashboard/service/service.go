@@ -34,3 +34,6 @@ func (s *dashboardService) GetTotalWipToday(ctx context.Context, req *entity.Get
 func (s *dashboardService) GetTotalProductMovementNotProcess(ctx context.Context, req *entity.GetTotalProductMovementNotProcessReq) (*entity.GetTotalProductMovementNotProcessResp, error) {
 	return s.repo.GetTotalProductMovementNotProcess(ctx, req)
 }
+func (s *dashboardService) GetTotalStockMiminum(ctx context.Context, req *entity.GetTotalStockMiminumReq) (*entity.GetTotalStockMiminumResp, error) {
+	return s.repo.GetTotalStockMiminum(ctx, req)
+}
