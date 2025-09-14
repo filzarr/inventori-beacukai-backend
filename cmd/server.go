@@ -65,11 +65,15 @@ func RunServer(cmd *flag.FlagSet, args []string) {
 			Expiration: 30 * time.Second,
 		}))
 	}
-
+	allowedOrigins := "*"
+	if envs.App.Environtment != "production" {
+		allowedOrigins = config.Envs.FrontendURL.ClientBaseURL
+	}
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "*",
-		AllowMethods: "GET,POST,PUT,DELETE,PATCH,OPTIONS,HEAD",
-		AllowHeaders: "Origin,Content-Type,Accept,Content-Length,Accept-Language,Accept-Encoding,Connection,Access-Control-Allow-Origin,Authorization",
+		AllowOrigins:     allowedOrigins,
+		AllowCredentials: true,
+		AllowMethods:     "GET,POST,PUT,DELETE,PATCH,OPTIONS,HEAD",
+		AllowHeaders:     "Origin,Content-Type,Accept,Content-Length,Accept-Language,Accept-Encoding,Connection,Access-Control-Allow-Origin,Authorization",
 	}))
 
 	// Access log middleware
