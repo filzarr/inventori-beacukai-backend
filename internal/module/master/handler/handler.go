@@ -169,4 +169,8 @@ func (h *MasterHandler) Register(router fiber.Router) {
 	router.Post("/products-movement-status", h.updateStatusProductsMovement)
 	router.Put("/products_movement/:id", h.updateProductsMovement)
 	router.Delete("/products_movement/:id", h.deleteProductsMovement)
+
+	// Penyesuaian
+	router.Get("/penyesuaian", m.AuthBearer, h.getPenyesuaian)
+	router.Post("/penyesuaian", m.AuthBearer, h.createPenyesuaian)
 }

@@ -152,6 +152,10 @@ type MasterRepository interface {
 	UpdateProductsMovement(ctx context.Context, req *entity.UpdateProductsMovementReq) error
 	UpdateStatusProductsMovement(ctx context.Context, req *entity.UpdateStatusProductsMoveMentReq) error
 	DeleteProductsMovement(ctx context.Context, req *entity.DeleteProductsMovementReq) error
+
+	// Penyesuaian
+	GetPenyesuaian(ctx context.Context, req *entity.GetPenyesuaianReq) (*entity.GetPenyesuaianResp, error)
+	CreatePenyesuaian(ctx context.Context, req *entity.CreatePenyesuaianReq) (*entity.CreatePenyesuaianResp, error)
 }
 
 type MasterService interface {
@@ -303,4 +307,8 @@ type MasterService interface {
 	UpdateProductsMovement(ctx context.Context, req *entity.UpdateProductsMovementReq) error
 	UpdateStatusProductsMovement(ctx context.Context, req *entity.UpdateStatusProductsMoveMentReq) error
 	DeleteProductsMovement(ctx context.Context, req *entity.DeleteProductsMovementReq) error
+
+	// Penyesuaian
+	GetPenyesuaian(ctx context.Context, req *entity.GetPenyesuaianReq) (*entity.GetPenyesuaianResp, error)
+	CreatePenyesuaian(ctx context.Context, req *entity.CreatePenyesuaianReq) (*entity.CreatePenyesuaianResp, error)
 }

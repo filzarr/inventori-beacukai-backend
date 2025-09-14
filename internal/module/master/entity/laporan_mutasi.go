@@ -17,13 +17,15 @@ func (r *GetLaporanMutasiReq) SetDefault() {
 }
 
 type LaporanMutasi struct {
-	Id         string `json:"id" db:"id"`
-	KodeBarang string `json:"kode_barang" db:"kode_barang"`
-	NamaBarang string `json:"nama_barang" db:"nama_barang"`
-	Satuan     string `json:"satuan" db:"satuan"`
-	SaldoAwal  int    `json:"saldo_awal" db:"saldo_awal"`
-	Pemasukan  int    `json:"pemasukan" db:"pemasukan"`
-	StokOpname int    `json:"stok_opname" db:"stok_opname"`
+	Id          string `json:"id" db:"id"`
+	KodeBarang  string `json:"kode_barang" db:"kode_barang"`
+	NamaBarang  string `json:"nama_barang" db:"nama_barang"`
+	Satuan      string `json:"satuan" db:"satuan"`
+	SaldoAwal   int    `json:"saldo_awal" db:"saldo_awal"`
+	Pemasukan   int    `json:"pemasukan" db:"pemasukan"`
+	Pengeluaran int    `json:"pengeluaran" db:"pengeluaran"`
+	StokOpname  int    `json:"stok_opname" db:"stok_opname"`
+	StokAkhir   int    `json:"stok_akhir" db:"stok_akhir"`
 }
 
 type GetLaporanMutasiResp struct {

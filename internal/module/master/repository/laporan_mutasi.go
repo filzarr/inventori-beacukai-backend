@@ -20,11 +20,17 @@ func (r *masterRepo) GetLaporanMutasi(ctx context.Context, req *entity.GetLapora
 			p.id,
 			p.kode AS kode_barang,
 			p.nama AS nama_barang,
+			p.satuan AS satuan,
 			p.saldo_awal,
 			COALESCE(SUM(iip.jumlah), 0) AS pemasukan,
-			p.jumlah AS stok_opname
+			COALESCE(SUM(pe.jumlah), 0) AS pengeluaran,
+			COALESCE(SUM(CASE WHEN w.kategori = 'Produksi' THEN ws.jumlah ELSE 0 END), 0) AS stok_opname,
+			COALESCE(SUM(CASE WHEN w.kategori IN ('Bahan Baku', 'Bahan Penolong', 'Mesin/Sparepart') THEN ws.jumlah ELSE 0 END), 0) AS stok_akhir
 		FROM products p
 		LEFT JOIN income_inventories_products iip ON p.kode = iip.kode_barang
+		LEFT JOIN penyesuaian pe ON p.kode = pe.kode_barang
+		LEFT JOIN warehouses_stocks ws ON p.kode = ws.kode_barang
+		LEFT JOIN warehouses w ON ws.warehouse_kode = w.kode
 	`
 
 	conditions := make([]string, 0)
@@ -69,7 +75,7 @@ func (r *masterRepo) GetLaporanMutasiPemasukan(ctx context.Context, req *entity.
 			cp.id,
 			bc.kategori AS kategori,
 			bc.kode_document AS kode_document, 
-			c.tanggal_document_bc AS tanggal,
+			cb.tanggal_document_bc AS tanggal,
 			cp.no_kontrak,
 			p.kode AS kode_barang,
 			p.nama AS nama_barang,
@@ -77,7 +83,8 @@ func (r *masterRepo) GetLaporanMutasiPemasukan(ctx context.Context, req *entity.
 			iip.jumlah AS jumlah
 		FROM contract_products cp
 		JOIN contracts c ON cp.no_kontrak = c.no_kontrak
-		JOIN bc_documents bc ON c.kode_document_bc = bc.kode_document
+		JOIN contracts_bc cb ON cp.no_kontrak = cb.no_kontrak
+		JOIN bc_documents bc ON cb.kode_document_bc = bc.kode_document
 		JOIN products p ON cp.kode_barang = p.kode
 		JOIN income_inventories_products iip 
 			ON c.no_kontrak = iip.no_kontrak AND cp.kode_barang = iip.kode_barang
